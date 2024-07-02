@@ -1,0 +1,666 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>第二单元总结 | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="题目概况结合三次作业，模拟多线程实时电梯系统，模拟对象是一个类似北京航空航天大学新主楼的电梯系统，楼座内有多部电梯，电梯可以在楼座内1-11层之间运行。系统从标准输入中读入乘客请求信息(起点层，终点楼层)，请求调度器会根据此时电梯运行情况(电梯所在楼层，运行方向等)将乘客请求合理分配给某部电梯，然后被分配请求的电梯会经过上下行，开关门，乘客进入&#x2F;离开电梯等动作将乘客从起点层运送到终点层。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二单元总结">
+<meta property="og:url" content="https://ascendira.github.io/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Ascendira">
+<meta property="og:description" content="题目概况结合三次作业，模拟多线程实时电梯系统，模拟对象是一个类似北京航空航天大学新主楼的电梯系统，楼座内有多部电梯，电梯可以在楼座内1-11层之间运行。系统从标准输入中读入乘客请求信息(起点层，终点楼层)，请求调度器会根据此时电梯运行情况(电梯所在楼层，运行方向等)将乘客请求合理分配给某部电梯，然后被分配请求的电梯会经过上下行，开关门，乘客进入&#x2F;离开电梯等动作将乘客从起点层运送到终点层。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-07-02T16:03:53.888Z">
+<meta property="article:modified_time" content="2024-07-02T16:54:11.857Z">
+<meta property="article:author" content="Ascendira">
+<meta property="article:tag" content="OO实验">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+      const saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+      
+      window.btf = {
+        saveToLocal: saveToLocal,
+        getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = url
+          script.async = true
+          script.onerror = reject
+          script.onload = script.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            script.onload = script.onreadystatechange = null
+            resolve()
+          }
+
+          Object.keys(attr).forEach(key => {
+            script.setAttribute(key, attr[key])
+          })
+
+          document.head.appendChild(script)
+        }),
+
+        getCSS: (url, id = false) => new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = url
+          if (id) link.id = id
+          link.onerror = reject
+          link.onload = link.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            link.onload = link.onreadystatechange = null
+            resolve()
+          }
+          document.head.appendChild(link)
+        }),
+
+        addGlobalFn: (key, fn, name = false, parent = window) => {
+          const pjaxEnable = false
+          if (!pjaxEnable && key.startsWith('pjax')) return
+
+          const globalFn = parent.globalFn || {}
+          const keyObj = globalFn[key] || {}
+    
+          if (name && keyObj[name]) return
+    
+          name = name || Object.keys(keyObj).length
+          keyObj[name] = fn
+          globalFn[key] = keyObj
+          parent.globalFn = globalFn
+        }
+      }
+    
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+      
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })()</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":150,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第二单元总结',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-03 00:54:11'
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">第二单元总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-02T16:03:53.888Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-02T16:54:11.857Z" title="更新于 2024-07-03 00:54:11">2024-07-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OO/">OO</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第二单元总结"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="题目概况"><a href="#题目概况" class="headerlink" title="题目概况"></a>题目概况</h2><p>结合三次作业，模拟<strong>多线程实时电梯系统</strong>，模拟对象是一个类似北京航空航天大学新主楼的电梯系统，楼座内有<strong>多部电梯</strong>，电梯可以在楼座内1-11层之间运行。系统从标准输入中读入乘客请求信息(起点层，终点楼层)，<strong>请求调度器</strong>会根据此时电梯运行情况(电梯所在楼层，运行方向等)将乘客请求合理<strong>分配给某部电梯</strong>，然后被分配请求的电梯会经过<strong>上下行，开关门，乘客进入&#x2F;离开电梯</strong>等动作将乘客从起点层运送到终点层。请求的输入通过<strong>我们提供的</strong>输入接口来<strong>定时投放</strong>请求，直接调用官方提供的接口即可。</p>
+<p>可以采用<strong>任何调度策略</strong>，即任意时刻，系统选择上下行动，是否在某层开关门，乘客分配给哪部电梯都可以自定义，只要保证在<strong>电梯系统运行时间不超过题目要求时间上限</strong>的前提下将所有的乘客送至目的地即可。</p>
+<hr>
+<h2 id="电梯重置"><a href="#电梯重置" class="headerlink" title="电梯重置"></a>电梯重置</h2><p>接收到重置指令的电梯需要<strong>尽快停靠后</strong>完成重置动作，<strong>再投入电梯系统运行</strong>。为安全起见，电梯重置时内部<strong>不可以</strong>有乘客，且重置动作**需要时间$T_{reset}&#x3D;1.2s$。</p>
+<p>有<strong>两种</strong>重置请求：</p>
+<ol>
+<li>第一类重置请求仅修改电梯参数，重置参数请求包含需要重置的电梯ID和电梯相关参数（<code>满载人数</code>、<code>移动时间</code>）。程序需要在重置完成后让电梯以新的参数运行，重置完成后，电梯处于原楼层(<strong>同上一次作业</strong>)。</li>
+<li>第二类重置请求将电梯修改为双轿厢电梯，重置参数包含需要重置的电梯ID，换乘楼层，两个轿厢的相关参数（移动一层的时间和满载人数）相同。当重置完成后，<strong>轿厢 A 默认初始在换乘楼层的下面一层，轿厢B默认初始换乘楼层的上面一层</strong>。（本次新增）</li>
+</ol>
+<p>双轿厢电梯<strong>运行</strong></p>
+<p>​	双轿厢电梯是指在同一电梯井道内同时拥有两个独立的电梯轿厢，而电梯系统默认的普通电梯是指在一个电梯井道内只有一个轿厢。为了保证两个轿厢不相互碰撞，将楼层分为上区、下区、换乘楼层，其中上区为换乘楼层以上的所有楼层，下区为换乘楼层以下的楼层，均不包含换乘楼层。在整个运行过程中，要求轿厢 A 只能在下区和换乘楼层运行，轿厢 B 只能在上区和换乘楼层运行，<strong>同一井道内的两轿厢不能同时位于换乘楼层</strong>。请思考双轿厢电梯的优势（包括双轿厢电梯耗电量优势，具体定义见性能分说明部分），合理设计调度方案。</p>
+<hr>
+<h2 id="RECEIVE约束"><a href="#RECEIVE约束" class="headerlink" title="RECEIVE约束"></a>RECEIVE约束</h2><p>为避免出现多部电梯接送同一乘客造成资源浪费的情况，引入RECEIVE约束。同时我们希望同学们将<code>RECEIVE</code>作为调度器的<strong>附加输出</strong>来说明自己的分配方案，边界情况见<strong>正确性说明</strong>。</p>
+<p><code>RECEIVE</code>被取消<strong>当且仅当</strong>以下两种情况发生：</p>
+<ul>
+<li>电梯<strong>开始重置</strong>后，其<strong>之前与此电梯</strong>有关的<code>RECEIVE</code>全部取消。也即<code>[时间戳]RESET_BEGIN-电梯ID</code>输出后，之前仍有效的<code>RECEIVE-乘客ID-电梯ID</code>全部取消，相关乘客处于未分配状态，<strong>电梯也视为未RECEIVE到任何乘客</strong>。</li>
+<li>乘客<strong>中途</strong>走出电梯后，相应的<code>RECEIVE</code>被取消。也即<code>[时间戳]OUT-乘客ID-所在层-电梯ID[-(A|B)]</code>输出后，<strong>最近一个</strong><code>RECEIVE-乘客ID-电梯ID[-(A|B)]</code>被取消。</li>
+</ul>
+<hr>
+<h2 id="性能分说明"><a href="#性能分说明" class="headerlink" title="性能分说明"></a>性能分说明</h2><p>可参考性能分公式，由于性能分公式比较复杂，实际上公式表达出的意思就是希望你的程序<strong>在保证正确性的前提下</strong>能够尽量做到以下三点。</p>
+<ul>
+<li>运行时间尽量短</li>
+<li>尽量不让请求等待过长时间</li>
+<li>尽量减少系统的无效运行</li>
+</ul>
+<hr>
+<h2 id="说明与警示"><a href="#说明与警示" class="headerlink" title="说明与警示"></a>说明与警示</h2><ul>
+<li><p><strong>代码实现中不存在轮询</strong></p>
+</li>
+<li><p>官方提供的输出包是<strong>线程安全</strong>的，同学们无需对其进行同步控制。</p>
+</li>
+<li><p>由于<strong>多线程调度存在随机性</strong>，运行产生的结果可能不同。</p>
+</li>
+</ul>
+<h1 id="设计分析"><a href="#设计分析" class="headerlink" title="设计分析"></a>设计分析</h1><ul>
+<li><h2 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h2></li>
+</ul>
+<p><img src="https://ooo.0x0.ooo/2024/07/03/OPp1Bx.png" alt="Unit_2"></p>
+<blockquote>
+<p>最终架构的主体部分由<code>elevators</code>,<code>elevatorstate</code>,<code>lock</code>,<code>passenger</code>,<code>queue</code>,<code>reset</code>,<code>strategy</code>七个包以及InputThread（输入线程），Main（主线程）组成，共有三类线程：主线程，输入线程，调度线程，电梯线程。</p>
+</blockquote>
+<ul>
+<li><h2 id="UML协作图"><a href="#UML协作图" class="headerlink" title="UML协作图"></a>UML协作图</h2></li>
+</ul>
+<p><img src="https://ooo.0x0.ooo/2024/07/03/OPp7Kj.png" alt="image-20240420152512401"></p>
+<h2 id="第一次作业"><a href="#第一次作业" class="headerlink" title="第一次作业"></a>第一次作业</h2><p><strong>由主类Main（主线程）初始化并创建共享对象，六部单轿厢电梯线程，调度线程，输入线程，依次启动电梯线程，调度线程，输入线程。</strong></p>
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
+<li>指定乘客乘坐的电梯，不需要调度策略</li>
+<li>输出符合输出格式：电梯与乘客状态输出</li>
+<li>整个过程所有电梯的状态都要符合正确性说明</li>
+<li>避免说明与警示出现的问题：轮询，初始化时间戳</li>
+<li>尽量符合性能指标（运行时间，请求等待时间，耗电量）使电梯运行</li>
+</ul>
+<h3 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h3><p><img src="https://ooo.0x0.ooo/2024/07/03/OPpN0p.png" alt="OO_Unit2_First"></p>
+<h3 id="共享对象"><a href="#共享对象" class="headerlink" title="共享对象"></a>共享对象</h3><ul>
+<li><h4 id="waitQueue"><a href="#waitQueue" class="headerlink" title="waitQueue"></a><strong>waitQueue</strong></h4><p><strong>介绍：</strong>输入线程与调度器线程的共享对象</p>
+<p><strong>同步块的设置</strong></p>
+<ul>
+<li>对共享对象内的属性进行访问与更改（设置结束，取出乘客，是否为空等）的方法均加上synchronized关键字，进行同步控制</li>
+<li>取出乘客与增加乘客方法，两者需要使用wait()和notifyAll()进行同步控制<ul>
+<li>调度器线程调用取出一个乘客的方法，若队列为空则进行等待，若不为空则直接取出乘客</li>
+<li>输入线程调用增加乘客的方法，向队列中增加乘客，并唤醒等待的调度器线程</li>
+</ul>
+</li>
+</ul>
+<p><strong>线程访问与更改</strong></p>
+<blockquote>
+<p>输入线程：</p>
+<ul>
+<li>控制台或投喂器（指定乘坐电梯的乘客）输入请求，输入线程得到请求后，创建并初始化乘客，将其加入waitQueue中</li>
+<li>控制台或投喂器（指定乘坐电梯的乘客）停止输入请求后，输入线程结束，并标记waitQueue结束。</li>
+</ul>
+<p>调度器线程：</p>
+<ul>
+<li>waitQueue不为空时，取出乘客</li>
+<li>waitQueue为空<ul>
+<li>未结束 -&gt; 等待</li>
+<li>结束 -&gt; 停止该线程</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><h4 id="AllocatedQueues"><a href="#AllocatedQueues" class="headerlink" title="AllocatedQueues"></a><strong>AllocatedQueues</strong></h4><p><strong>介绍：</strong>实际的共享对象为容器内电梯的等待队列—— 调度器线程与各电梯线程的共享对象：</p>
+<p><strong>同步块的设置</strong></p>
+<p>与waitQueue相同，为同一对象类型。</p>
+<ul>
+<li>各电梯线程调用取出全部乘客的方法，若队列为空则进行等待，若不为空则直接取出全部乘客</li>
+<li>调度器线程调用增加乘客的方法，向队列中增加乘客，并唤醒等待的电梯线程</li>
+</ul>
+<p><strong>线程访问与更改</strong></p>
+<blockquote>
+<p>调度器线程：</p>
+<ul>
+<li>由于乘客已指定乘坐的电梯，直接根据乘客信息加入AllocatedQueues中对应电梯的等待队列</li>
+</ul>
+<p>各电梯线程（每个电梯从等待队列parallelQueue，获取调度器分配的乘客）：</p>
+<ul>
+<li>parallelQueue不为空时，取出乘客</li>
+<li>parallelQueue为空<ul>
+<li>未结束 -&gt; 等待</li>
+<li>结束 -&gt; 停止该线程</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="运行策略"><a href="#运行策略" class="headerlink" title="运行策略"></a>运行策略</h3><ul>
+<li><h4 id="主请求切换策略"><a href="#主请求切换策略" class="headerlink" title="主请求切换策略"></a>主请求切换策略</h4><blockquote>
+<ul>
+<li><p>策略场景：电梯内乘客队列或电梯外等待队列发生改变且两者至少有一个不为空时使用该策略</p>
+</li>
+<li><p>设置主请求目的：保证电梯运行到最高层或最低层（尽量满足分配给电梯的所有乘客的需求）再调转运行方向</p>
+</li>
+<li><p>如何设置主请求：</p>
+<ul>
+<li>若电梯未接到该乘客，标记电梯为未接到主请求并设置电梯向主请求出发楼层运行</li>
+<li>若电梯已接到该乘客，标记电梯为已接到主请求并设置电梯向主请求目标楼层运行</li>
+</ul>
+</li>
+<li><p>只要电梯内乘客队列或电梯外等待队列至少有一个不为空，则一定存在主请求，保证电梯根据主请求改变电梯状态（电梯方向，是否接到主请求）</p>
+</li>
+<li><p>实现过程：</p>
+<ul>
+<li><p>电梯内乘客序列</p>
+<ul>
+<li>不为空<ul>
+<li>电梯向上运行，目标楼层最高的乘客设置为主请求</li>
+<li>电梯向上运行，目标楼层最低的乘客设置为主请求</li>
+</ul>
+</li>
+<li>空：未设置主请求</li>
+</ul>
+</li>
+<li><p>电梯外等待队列</p>
+<ul>
+<li><p>不为空：</p>
+<ul>
+<li>若未设置主请求，从等待队列中选择到达最早的乘客作为主请求</li>
+</ul>
+<blockquote>
+<p>电梯已接到主请求</p>
+<blockquote>
+<p>乘客出发楼层与电梯所在楼层为同一楼层（已接到该乘客）</p>
+<blockquote>
+<ul>
+<li><p>电梯向上运行，乘客目标楼层 与 现主请求目标楼层 比较，若前者较大，设置该乘客为主请求</p>
+</li>
+<li><p>电梯向下运行，乘客目标楼层 与 现主请求目标楼层 比较，若前者较小，设置该乘客为主请求</p>
+</li>
+</ul>
+</blockquote>
+<p>乘客出发楼层与电梯所在楼层不为同一楼层（未接到该乘客）</p>
+<blockquote>
+<ul>
+<li><p>电梯向上运行，乘客的出发楼层 高于 电梯所在楼层 &amp;&amp; 乘客的出发楼层与目标楼层的较大值 大于 现主请的目标楼层，设置该乘客为主请求</p>
+</li>
+<li><p>电梯向下运行，乘客的出发楼层 低于 电梯所在楼层 &amp;&amp; 乘客的出发楼层与目标楼层的较小值 小于 现主请的目标楼层，设置该乘客为主请求</p>
+</li>
+</ul>
+</blockquote>
+</blockquote>
+<p>电梯未接到主请求</p>
+<blockquote>
+<p>乘客出发楼层与电梯所在楼层为同一楼层（已接到该乘客）</p>
+<blockquote>
+<ul>
+<li><p>电梯向上运行，乘客目标楼层 与 现主请求出发楼层与目标楼层的较大值 比较，若前者较大，设置该乘客为主请求</p>
+</li>
+<li><p>电梯向下运行，乘客目标楼层 与 现主请求出发楼层与目标楼层的较小值 比较，若前者较小，设置该乘客为主请求</p>
+</li>
+</ul>
+</blockquote>
+<p>乘客出发楼层与电梯所在楼层不为同一楼层（未接到该乘客）</p>
+<blockquote>
+<ul>
+<li><p>电梯向上运行，乘客的出发楼层 高于 电梯所在楼层 &amp;&amp; 乘客的出发楼层与目标楼层的较大值 大于 现主请的出发楼层与目标楼层的较大值，设置该乘客为主请求</p>
+</li>
+<li><p>电梯向下运行，乘客的出发楼层 低于 电梯所在楼层 &amp;&amp; 乘客的出发楼层与目标楼层的较小值 小于 现主请的出发楼层与目标楼层的较小值，设置该乘客为主请求</p>
+</li>
+</ul>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+<li><p>空：</p>
+<ul>
+<li>不更新主请求</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><h4 id="捎带策略"><a href="#捎带策略" class="headerlink" title="捎带策略"></a>捎带策略</h4><blockquote>
+<p>前提条件：乘客的出发楼层与电梯所在楼层一致</p>
+<ul>
+<li><p>该乘客为主请求：保证该乘客进入电梯，若电梯已满，将电梯内乘客序列中最晚进入的乘客踢出，并根据主请求更改电梯状态</p>
+</li>
+<li><p>该乘客不为主请求：</p>
+<ul>
+<li><p>未接到主请求</p>
+<blockquote>
+<ul>
+<li><p>电梯内乘客数量小于等于电梯容量减去2，允许该乘客进入电梯</p>
+</li>
+<li><p>电梯内乘客数量小于等于电梯容量减去1，且该乘客能在主请求进入电梯前离开电梯（电梯在到达主请求的出发楼层前或时，该乘客已到达其目标楼层），允许该乘客进入电梯</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>已接到主请求：</p>
+<blockquote>
+<ul>
+<li>电梯内乘客数量小于等于电梯容量减去1，允许该乘客进入电梯</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="第二次作业"><a href="#第二次作业" class="headerlink" title="第二次作业"></a>第二次作业</h2><p><strong>由主类Main（主线程）初始化并创建共享对象，六部单轿厢电梯线程，调度线程，输入线程，依次启动电梯线程，调度线程，输入线程。</strong></p>
+<h3 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h3><ul>
+<li><h4 id="更改"><a href="#更改" class="headerlink" title="更改"></a><strong>更改</strong></h4><ul>
+<li>不指定乘客乘坐的电梯，需要调度策略</li>
+<li>电梯重置，设置电梯的容量和运行速度</li>
+<li>实现RECEIVE约束</li>
+<li>输出符合输出格式：增加重置输出与RECEIVE输出</li>
+</ul>
+</li>
+<li><h4 id="保留"><a href="#保留" class="headerlink" title="保留"></a><strong>保留</strong></h4><ul>
+<li>整个过程所有电梯的状态都要符合正确性说明</li>
+<li>避免说明与警示出现的问题</li>
+<li>尽量符合性能指标使电梯运行</li>
+</ul>
+</li>
+</ul>
+<h3 id="状态模式-1"><a href="#状态模式-1" class="headerlink" title="状态模式"></a>状态模式</h3><p>​	<img src="https://ooo.0x0.ooo/2024/07/03/OPprMU.png" alt="OO_Unit2_Second"></p>
+<h3 id="共享对象（增加）"><a href="#共享对象（增加）" class="headerlink" title="共享对象（增加）"></a>共享对象（增加）</h3><ul>
+<li><h4 id="ResetQueue"><a href="#ResetQueue" class="headerlink" title="ResetQueue"></a><strong>ResetQueue</strong></h4><p><strong>介绍：</strong>实际的共享对象为容器内电梯的重置请求队列—— 输入线程与各电梯线程的共享对象：</p>
+<p><strong>同步块的设置</strong></p>
+<ul>
+<li>对共享对象内的属性进行访问与更改（设置结束，取出重置请求，是否为空等）的方法均加上synchronized关键字，进行同步控制</li>
+<li>取出重置请求与增加重置请求方法，仅使用synchronized关键则进行同步控制即可<ul>
+<li>各电梯线程调用<code>CheckIfFit</code>的方法（检查是否存在重置请求，若存在则设置电梯重置请求，返回<code>True</code>，否则直接返回<code>Flase</code>）</li>
+<li>输入线程调用增加重置请求的方法，向队列中增加重置请求</li>
+</ul>
+</li>
+</ul>
+<p><strong>线程访问与更改</strong></p>
+<blockquote>
+<p>输入线程：</p>
+<ul>
+<li>控制台或投喂器（指定乘坐电梯的乘客）输入重置请求，输入线程得到重置请求后，创建并初始化重置请求，并将其加入ResetQueue中对应电梯的重置请求队列，并唤醒电梯线程</li>
+<li>控制台或投喂器（指定乘坐电梯的乘客）停止输入请求后，输入线程结束，并标记ResetQueue结束。</li>
+</ul>
+<p>电梯线程：</p>
+<ul>
+<li>电梯在开始运行前或切换状态前都会对重置请求队列进行检查是否为空，不为空则进入重置状态，否则正常运行</li>
+</ul>
+</blockquote>
+</li>
+<li><h4 id="Locks"><a href="#Locks" class="headerlink" title="Locks"></a><strong>Locks</strong></h4><p><strong>介绍：</strong>实际的共享对象为容器内电梯所拥有的Lock（锁对象）—— 调度器线程与各电梯线程的共享对象</p>
+<p><strong>锁的选择</strong></p>
+<ul>
+<li>Lock为自行实现的同步控制锁，每部电梯线程均有自己的锁并与调度器线程共享，调度器线程通过Locks对象对所有电梯的锁进行统一管理。</li>
+<li><code>lock()</code>（加锁）：若已有线程（调度器线程或者对应的电梯线程）持有锁，调用该方法的线程等待，直至前者释放锁</li>
+<li><code>unlock()</code>（释放锁）：释放所持有的锁，并唤醒等待的线程</li>
+</ul>
+<p><strong>线程访问与更改</strong></p>
+<blockquote>
+<p>设置该共享对象的原因：</p>
+<ul>
+<li>调度器线程需要依据调度策略将乘客分配给电梯，但需要保证电梯的状态不能发生改变，否则导致调度器分配乘客的目标不能实现（例如调度器依据捎带目标将乘客1分配给电梯A，但电梯A接收到乘客时，电梯A超过乘客1的出发楼层，则无法捎带），故设置该共享对象保证上述要求</li>
+</ul>
+<p>调度器线程：</p>
+<ul>
+<li>从waitQueue 获取新乘客<ul>
+<li>无法得到Locks中的一把锁（对应电梯正在占用Lock），等待，直到对应电梯释放Lock（电梯sleep）</li>
+<li>占用Locks中所有Lock（其他电梯线程均未得到锁，不能改变状态），再依据调度策略将乘客乘客电梯</li>
+</ul>
+</li>
+</ul>
+<p>电梯线程：</p>
+<ul>
+<li>无法得到自己的Lock，等待，直到调度器释放Lock</li>
+<li>占用Lock（电梯线程的状态可能发生变化），电梯正在运行</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p><strong>运行策略 —— 不变</strong></p>
+<h3 id="调度策略"><a href="#调度策略" class="headerlink" title="调度策略"></a>调度策略</h3><ul>
+<li><h4 id="可分配前提条件"><a href="#可分配前提条件" class="headerlink" title="可分配前提条件"></a><strong>可分配前提条件</strong></h4><p>电梯内乘客队列和电梯外等待队列的乘客数小于等于电梯容量的120%</p>
+<p>注：若没有电梯可以分配乘客，调度器线程sleep50ms</p>
+</li>
+<li><h4 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a><strong>优先级</strong></h4><ol>
+<li>处于<code>Working</code>,<code>Moving</code>状态且满足捎带策略的电梯</li>
+<li>电梯内乘客队列和电梯外等待队列的乘客数为零 且 距离乘客出发楼层最近的电梯</li>
+<li>电梯内乘客数量最少的电梯</li>
+</ol>
+</li>
+<li><h4 id="性能指标的匹配度"><a href="#性能指标的匹配度" class="headerlink" title="性能指标的匹配度"></a><strong>性能指标的匹配度</strong></h4><ul>
+<li>前提条件：避免出现将乘客均分配给一个电梯的情况，避免分配给电梯的乘客超出电梯的处理能力范围，否则会出现不符合性能指标的现象</li>
+<li>最高优先级：保证乘客尽量被捎带，避免分配给空闲电梯，增加耗电量，同时能将乘客的等待时间控制在一定限度内（电梯运行一轮次的时间）</li>
+<li>第二优先级：避免乘客未能匹配到能被捎带的电梯，防止等待时间过长</li>
+<li>第三优先级：优选最近的电梯，尽量保证乘客能分配给电梯，减少等待时间</li>
+<li>程序运行时间与乘客等待时间密切（正）相关，关注后者即可</li>
+</ul>
+</li>
+</ul>
+<h2 id="第三次作业"><a href="#第三次作业" class="headerlink" title="第三次作业"></a>第三次作业</h2><p><strong>由主类Main（主线程）初始化并创建共享对象，六部单轿厢电梯线程，调度线程，输入线程，依次启动电梯线程，调度线程，输入线程。</strong></p>
+<h3 id="需求-2"><a href="#需求-2" class="headerlink" title="需求"></a>需求</h3><h4 id="更改-1"><a href="#更改-1" class="headerlink" title="更改"></a><strong>更改</strong></h4><ul>
+<li>增加电梯重置：单轿厢电梯重置为双轿厢电梯</li>
+<li>输出符合输出格式：重置双轿厢电梯后，电梯与乘客状态输出格式发生变化</li>
+<li>尽量符合性能指标使电梯运行：双轿厢电梯耗电量为以上数据的$\frac{1}{4}$</li>
+</ul>
+<h4 id="保留-1"><a href="#保留-1" class="headerlink" title="保留"></a><strong>保留</strong></h4><ul>
+<li>不指定乘客乘坐的电梯，需要调度策略</li>
+<li>电梯重置，设置电梯的容量和运行速度</li>
+<li>实现RECEIVE约束</li>
+<li>整个过程所有电梯的状态都要符合正确性说明</li>
+<li>避免说明与警示出现的问题</li>
+</ul>
+<h3 id="状态模式-2"><a href="#状态模式-2" class="headerlink" title="状态模式"></a>状态模式</h3><ul>
+<li>状态模式与第二次作业相同，但需控制双轿厢电梯的两个轿厢不发生碰撞</li>
+</ul>
+<p><img src="https://ooo.0x0.ooo/2024/07/03/OPpA1Y.png" alt="OO_Unit2_Second"></p>
+<h3 id="共享对象（增加）-1"><a href="#共享对象（增加）-1" class="headerlink" title="共享对象（增加）"></a>共享对象（增加）</h3><ul>
+<li><h4 id="ShareFloor"><a href="#ShareFloor" class="headerlink" title="ShareFloor"></a><strong>ShareFloor</strong></h4><p><strong>介绍：</strong>双轿厢电梯的两个轿厢的共享对象</p>
+<p><strong>同步块的设置</strong></p>
+<ul>
+<li>对共享对象内的属性进行访问与更改（进入换乘楼层，离开换乘楼层等）的方法均加上synchronized关键字，进行同步控制</li>
+</ul>
+<p><strong>线程访问与更改</strong></p>
+<blockquote>
+<p>双轿厢电梯某一个轿厢准备进入换乘楼层</p>
+<blockquote>
+<p>调用<code>arriveIn</code>方法</p>
+<ul>
+<li>若已有轿厢（另一个）位于换乘楼层，调用该方法的轿厢线程等待，直至前者离开换乘楼层</li>
+<li>若未有轿厢（另一个）位于换乘楼层，设置换层楼层处于使用状态</li>
+</ul>
+</blockquote>
+<p>双轿厢电梯某一个轿厢处于换乘楼层</p>
+<blockquote>
+<p>调用<code>leaveOut</code>方法</p>
+<ul>
+<li>设置换乘楼层处于空闲状态，并唤醒等待的轿厢线程</li>
+</ul>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<h3 id="双轿厢电梯碰撞控制"><a href="#双轿厢电梯碰撞控制" class="headerlink" title="双轿厢电梯碰撞控制"></a>双轿厢电梯碰撞控制</h3><ol>
+<li>通过上述共享对象<code>ShareFloor</code>保证任意时刻只有双轿厢电梯中的一个轿厢位于换乘楼层</li>
+<li>双轿厢电梯中的一个轿厢若位于换乘楼层，将需要换乘（目的楼层超出本轿厢电梯的运行范围）的乘客踢出电梯<ul>
+<li>其内的乘客队列与其外的等待队列为空，先操作电梯离开换乘楼层，再设置电梯状态为<code>Waiting</code>（可以保证需要使用换乘楼层的轿厢不会因另一个轿厢在换乘楼层等待导致死锁或等待时间过长）</li>
+<li>其内的乘客队列与其外的等待队列不为空，继续正常运行</li>
+</ul>
+</li>
+</ol>
+<h1 id="Bug分析"><a href="#Bug分析" class="headerlink" title="Bug分析"></a>Bug分析</h1><h2 id="第一次作业-1"><a href="#第一次作业-1" class="headerlink" title="第一次作业"></a>第一次作业</h2><ul>
+<li><h3 id="电梯启动"><a href="#电梯启动" class="headerlink" title="电梯启动"></a>电梯启动</h3><blockquote>
+<p><strong>情景介绍：</strong></p>
+<p>调度线程将乘客1分配给电梯线程A，电梯A需改变<code>Waiting</code>状态，该乘客为电梯A此时的主请求，若乘客1楼层与电梯A所在楼层位于同一层，接到主请求，电梯随后进入<code>Working</code>状态；若乘客1楼层与电梯A所在楼层不位于同一层，未接到主请求，电梯随后进入<code>Moving</code>状态；</p>
+<p>根据具体实现，电梯再切换到下一个状态前，需先判断主请求状态。在上述情景中，假设乘客1楼层与电梯A所在楼层位于同一层，判断接到主请求，将乘客1移出等待队列并在随后的<code>Working</code>状态输出乘客进入电梯。在<code>Working</code>状态开关门时间内，调度器线程可能会分配多于电梯1容量的乘客给电梯1，导致电梯1可能在本楼层需要接送的乘客超出容量。</p>
+<p><strong>bug分析：</strong></p>
+<p>本楼层需接送乘客过多，主请求未能进入电梯，bug产生！</p>
+<p><strong>debug：</strong></p>
+<p>提前设定特判条件保证上述主请求最先进入电梯，</p>
+</blockquote>
+</li>
+<li><h3 id="电梯移动时的主请求切换"><a href="#电梯移动时的主请求切换" class="headerlink" title="电梯移动时的主请求切换"></a>电梯移动时的主请求切换</h3><blockquote>
+<p><strong>情景介绍：</strong></p>
+<p>在电梯移动过程中，进行主请求切换后，若未接到主请求，需要保证电梯到达主请求所在楼层时，使主请求进入电梯</p>
+<p><strong>bug分析：</strong></p>
+<p>在上述情景下，可能由于电梯已满，导致主请求未能进入电梯，bug产生！</p>
+<p><strong>debug：</strong></p>
+<p>电梯已满的情况下，将最晚进入电梯的乘客踢出，保证主请求进入电梯</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="第二次作业-1"><a href="#第二次作业-1" class="headerlink" title="第二次作业"></a>第二次作业</h2><ul>
+<li><h3 id="轮询"><a href="#轮询" class="headerlink" title="轮询"></a>轮询</h3><blockquote>
+<p><strong>情景介绍：</strong></p>
+<p>输入线程因输入停止结束线程，调度器线程的待分配乘客队列仍不为空（未分配出去），调度器线程终止的条件为输入线程终止 &amp;&amp; 待分配乘客队列为空 &amp;&amp; 所有电梯均处于等待状态（避免电梯仍在运行时踢出乘客），调度器线程从共享对象<code>WaitQueue</code>中取出乘客时的等待条件输入线程未终止 &amp;&amp; 待分配乘客队列为空。</p>
+<p><strong>bug分析：</strong></p>
+<p>上述情景下，导致调度器线程从共享对象<code>WaitQueue</code>中取出乘客时，由于输入线程已终止，不会再进行等待，导致轮询</p>
+<p><strong>debug：</strong></p>
+<p>将调度器线程从共享对象<code>WaitQueue</code>中取出乘客时的等待条件待分配乘客队列为空</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="第三次作业-1"><a href="#第三次作业-1" class="headerlink" title="第三次作业"></a>第三次作业</h2><ul>
+<li><h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><blockquote>
+<p><strong>情景介绍：</strong></p>
+<p>双轿厢电梯中的轿厢A已位于换乘楼层，已完成开关门，准备拿到自己的Lock继续运行，轿厢B准备进入换乘楼层。</p>
+<p>每个电梯在进入sleep前均要释放自己的Lock（其作用已解释），允许调度器线程拿到所有电梯的Lock再根据调度策略分配乘客，然后电梯再sleep结束后要拿到自己的Lock，保证电梯再运行阶段调度器线程不会再分配乘客（调度器线程只有拿到所有电梯的Lock方能分配乘客，完成一次分配乘客再一次性释放所有锁）。</p>
+<p>双轿厢电梯中的一个轿厢想要进入换乘楼层，需要保证无轿厢在换乘楼层</p>
+<p><strong>bug分析：</strong></p>
+<ol>
+<li><p>轿厢B因轿厢A已在换乘楼层导致不能进入，陷入等待，并且并没有释放自己的锁</p>
+</li>
+<li><p>调度器线程在轿厢A进行sleep时间内已拿到轿厢A的Lock，想要拿到轿厢B的Lock</p>
+</li>
+<li><p>轿厢A只有拿到自己的锁才能离开换乘楼层</p>
+</li>
+</ol>
+<p>导致死锁！！！</p>
+<p><strong>debug：</strong></p>
+<p>使轿厢B因轿厢A已在换乘楼层不能进入，陷入等待时释放自己的锁即能解决死锁</p>
+</blockquote>
+</li>
+<li><h3 id="双轿厢电梯不能停止"><a href="#双轿厢电梯不能停止" class="headerlink" title="双轿厢电梯不能停止"></a>双轿厢电梯不能停止</h3><blockquote>
+<p>在本代码实现当中，直接由原正常电梯直接创建双轿厢电梯，由于JVM调度的差异性，若在双轿厢电梯线程创建（原正常电梯未进入Reseting状态）前，输入线程结束，此时调度器判断所有电梯（双轿厢电梯未加入调度器所管理的电梯序列）均进入等待序列，且输入线程结束并为空，则通知目前所管理电梯线程无输入乘客，除了仍有需求需要处理的电梯线程外均停止，原双轿厢电梯能自行停止（完成双轿厢电梯时自行设定即可），但双轿厢电梯线程会进入等待调度器分配乘客序列，若未将调度器已停止的消息通知给双轿厢电梯线程，双轿厢电梯线程将一直等待，导致程序超时。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="Debug方法"><a href="#Debug方法" class="headerlink" title="Debug方法"></a>Debug方法</h1><h2 id="print大法"><a href="#print大法" class="headerlink" title="print大法"></a>print大法</h2><ul>
+<li>根据bug推测其可能的位置，利用TimableOutput.println方法，获取bug附近尽可能多的信息，推测bug产生的原因</li>
+</ul>
+<h2 id="调试，设置条件断点"><a href="#调试，设置条件断点" class="headerlink" title="调试，设置条件断点"></a>调试，设置条件断点</h2><ul>
+<li>根据bug推测其可能的位置，在该位置设置条件断点，保证程序在运行到该条件断点前不被打断，模拟程序正常运行的场景；满足条件方可中断，再查看当前各线程的状态即可</li>
+</ul>
+<p>两者各有优势，前者在保证程序正常运行至结束的前提下，能且只能看到自己想看的信息（TimableOutput.println方法输出）；后者只能保证程序正常运行到满足条件的位置，之后可能会由于多线程导致结果不符合期望，但是可以再中断出查看更多信息，可逐一排查。</p>
+<h1 id="心得体会"><a href="#心得体会" class="headerlink" title="心得体会"></a>心得体会</h1><h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>目前，在我看来，线程安全需要保证的就是多个线程对共享对象的访问和改写的安全性。为避免出现多个线程对共享对象同时访问和改写导致的竞争问题，在本次单元学习中，主要是使用synchronized关键字和同步控制锁进行同步控制，通过合理设计，避免竞争以及上述bug分析当中出现的死锁和轮询问题。</p>
+<h2 id="层次化设计"><a href="#层次化设计" class="headerlink" title="层次化设计"></a>层次化设计</h2><p>依据UML类图，最终架构的主体部分由<code>elevators</code>,<code>elevatorstate</code>,<code>lock</code>,<code>passenger</code>,<code>queue</code>,<code>reset</code>,<code>strategy</code>七个包以及InputThread（输入线程），Main（主线程）组成，共有三类线程：主线程，输入线程，调度线程，电梯线程。</p>
+<p><img src="https://ooo.0x0.ooo/2024/07/03/OPpKHv.png" alt="Unit2_层次化设计"></p>
+<p>依托图中的层次化设计，只需关注各层次内部的准确性以及各层次之间的关联性，分步完成各层次即可，同时方便定位bug。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/">https://ascendira.github.io/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OO%E5%AE%9E%E9%AA%8C/">OO实验</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%89%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第三单元总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第三单元总结</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/03/OO/oopre%E6%80%BB%E7%BB%93/" title="OOpre总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">OOpre总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第一单元总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-03</div><div class="title">第一单元总结</div></div></a></div><div><a href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E5%9B%9B%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第四单元总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-03</div><div class="title">第四单元总结</div></div></a></div><div><a href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%89%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第三单元总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-03</div><div class="title">第三单元总结</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%A6%82%E5%86%B5"><span class="toc-number">1.</span> <span class="toc-text">题目概况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E6%A2%AF%E9%87%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">电梯重置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RECEIVE%E7%BA%A6%E6%9D%9F"><span class="toc-number">3.</span> <span class="toc-text">RECEIVE约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E8%AF%B4%E6%98%8E"><span class="toc-number">4.</span> <span class="toc-text">性能分说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E%E4%B8%8E%E8%AD%A6%E7%A4%BA"><span class="toc-number">5.</span> <span class="toc-text">说明与警示</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%88%86%E6%9E%90"><span class="toc-number"></span> <span class="toc-text">设计分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UML%E7%B1%BB%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">UML类图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UML%E5%8D%8F%E4%BD%9C%E5%9B%BE"><span class="toc-number">2.</span> <span class="toc-text">UML协作图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%9C%E4%B8%9A"><span class="toc-number">3.</span> <span class="toc-text">第一次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E6%B1%82"><span class="toc-number">3.1.</span> <span class="toc-text">需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">状态模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.3.</span> <span class="toc-text">共享对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#waitQueue"><span class="toc-number">3.3.1.</span> <span class="toc-text">waitQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AllocatedQueues"><span class="toc-number">3.3.2.</span> <span class="toc-text">AllocatedQueues</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="toc-number">3.4.</span> <span class="toc-text">运行策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%AF%B7%E6%B1%82%E5%88%87%E6%8D%A2%E7%AD%96%E7%95%A5"><span class="toc-number">3.4.1.</span> <span class="toc-text">主请求切换策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%8E%E5%B8%A6%E7%AD%96%E7%95%A5"><span class="toc-number">3.4.2.</span> <span class="toc-text">捎带策略</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A"><span class="toc-number">4.</span> <span class="toc-text">第二次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E6%B1%82-1"><span class="toc-number">4.1.</span> <span class="toc-text">需求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9"><span class="toc-number">4.1.1.</span> <span class="toc-text">更改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E7%95%99"><span class="toc-number">4.1.2.</span> <span class="toc-text">保留</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F-1"><span class="toc-number">4.2.</span> <span class="toc-text">状态模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%EF%BC%88%E5%A2%9E%E5%8A%A0%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">共享对象（增加）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ResetQueue"><span class="toc-number">4.3.1.</span> <span class="toc-text">ResetQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Locks"><span class="toc-number">4.3.2.</span> <span class="toc-text">Locks</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5"><span class="toc-number">4.4.</span> <span class="toc-text">调度策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AF%E5%88%86%E9%85%8D%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.4.1.</span> <span class="toc-text">可分配前提条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">4.4.2.</span> <span class="toc-text">优先级</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9A%84%E5%8C%B9%E9%85%8D%E5%BA%A6"><span class="toc-number">4.4.3.</span> <span class="toc-text">性能指标的匹配度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AC%A1%E4%BD%9C%E4%B8%9A"><span class="toc-number">5.</span> <span class="toc-text">第三次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9C%80%E6%B1%82-2"><span class="toc-number">5.1.</span> <span class="toc-text">需求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9-1"><span class="toc-number">5.1.1.</span> <span class="toc-text">更改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E7%95%99-1"><span class="toc-number">5.1.2.</span> <span class="toc-text">保留</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F-2"><span class="toc-number">5.2.</span> <span class="toc-text">状态模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%EF%BC%88%E5%A2%9E%E5%8A%A0%EF%BC%89-1"><span class="toc-number">5.3.</span> <span class="toc-text">共享对象（增加）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ShareFloor"><span class="toc-number">5.3.1.</span> <span class="toc-text">ShareFloor</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E8%BD%BF%E5%8E%A2%E7%94%B5%E6%A2%AF%E7%A2%B0%E6%92%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">5.4.</span> <span class="toc-text">双轿厢电梯碰撞控制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bug%E5%88%86%E6%9E%90"><span class="toc-number"></span> <span class="toc-text">Bug分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%9C%E4%B8%9A-1"><span class="toc-number">1.</span> <span class="toc-text">第一次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%A2%AF%E5%90%AF%E5%8A%A8"><span class="toc-number">1.1.</span> <span class="toc-text">电梯启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%A2%AF%E7%A7%BB%E5%8A%A8%E6%97%B6%E7%9A%84%E4%B8%BB%E8%AF%B7%E6%B1%82%E5%88%87%E6%8D%A2"><span class="toc-number">1.2.</span> <span class="toc-text">电梯移动时的主请求切换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%BD%9C%E4%B8%9A-1"><span class="toc-number">2.</span> <span class="toc-text">第二次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AE%E8%AF%A2"><span class="toc-number">2.1.</span> <span class="toc-text">轮询</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AC%A1%E4%BD%9C%E4%B8%9A-1"><span class="toc-number">3.</span> <span class="toc-text">第三次作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%BB%E9%94%81"><span class="toc-number">3.1.</span> <span class="toc-text">死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E8%BD%BF%E5%8E%A2%E7%94%B5%E6%A2%AF%E4%B8%8D%E8%83%BD%E5%81%9C%E6%AD%A2"><span class="toc-number">3.2.</span> <span class="toc-text">双轿厢电梯不能停止</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Debug%E6%96%B9%E6%B3%95"><span class="toc-number"></span> <span class="toc-text">Debug方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#print%E5%A4%A7%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">print大法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%EF%BC%8C%E8%AE%BE%E7%BD%AE%E6%9D%A1%E4%BB%B6%E6%96%AD%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">调试，设置条件断点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A"><span class="toc-number"></span> <span class="toc-text">心得体会</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-number">1.</span> <span class="toc-text">线程安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%82%E6%AC%A1%E5%8C%96%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">层次化设计</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第一单元总结">第一单元总结</a><time datetime="2024-07-02T16:03:53.898Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E5%9B%9B%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第四单元总结">第四单元总结</a><time datetime="2024-07-02T16:03:53.895Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%89%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第三单元总结">第三单元总结</a><time datetime="2024-07-02T16:03:53.892Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第二单元总结">第二单元总结</a><time datetime="2024-07-02T16:03:53.888Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/oopre%E6%80%BB%E7%BB%93/" title="OOpre总结">OOpre总结</a><time datetime="2024-07-02T16:03:41.211Z" title="发表于 2024-07-03 00:03:41">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = (ele) => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from(ele).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+    
+    codeMermaidEle.forEach(ele => {
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.innerHTML = `<pre class="mermaid-src" hidden>${ele.textContent}</pre>`
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+  
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

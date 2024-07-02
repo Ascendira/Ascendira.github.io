@@ -1,0 +1,284 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>挑战性任务-Sigaction | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="挑战性任务报告 首先想要吐槽一点，由于要求不能对Makefile进行修改，导致不能将自己编写的文件链接入可执行文件当中，导致只能把自己写的函数挤压进已有文件当中，显得有点丑陋  本实验需要实现异步通信Sigaction，仅需关注32个普通信号中的6个信号，按照其信号处理函数或默认处理动作来处理，其余忽略即可。 信号数据存放位置由于考虑到不同进程需要存储自己的信号，便于在从内核态返回用户态时直接查询">
+<meta property="og:type" content="article">
+<meta property="og:title" content="挑战性任务-Sigaction">
+<meta property="og:url" content="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/index.html">
+<meta property="og:site_name" content="Ascendira">
+<meta property="og:description" content="挑战性任务报告 首先想要吐槽一点，由于要求不能对Makefile进行修改，导致不能将自己编写的文件链接入可执行文件当中，导致只能把自己写的函数挤压进已有文件当中，显得有点丑陋  本实验需要实现异步通信Sigaction，仅需关注32个普通信号中的6个信号，按照其信号处理函数或默认处理动作来处理，其余忽略即可。 信号数据存放位置由于考虑到不同进程需要存储自己的信号，便于在从内核态返回用户态时直接查询">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-07-02T06:57:30.975Z">
+<meta property="article:modified_time" content="2024-07-02T15:55:45.425Z">
+<meta property="article:author" content="Ascendira">
+<meta property="article:tag" content="OS实验">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+      const saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+      
+      window.btf = {
+        saveToLocal: saveToLocal,
+        getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = url
+          script.async = true
+          script.onerror = reject
+          script.onload = script.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            script.onload = script.onreadystatechange = null
+            resolve()
+          }
+
+          Object.keys(attr).forEach(key => {
+            script.setAttribute(key, attr[key])
+          })
+
+          document.head.appendChild(script)
+        }),
+
+        getCSS: (url, id = false) => new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = url
+          if (id) link.id = id
+          link.onerror = reject
+          link.onload = link.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            link.onload = link.onreadystatechange = null
+            resolve()
+          }
+          document.head.appendChild(link)
+        }),
+
+        addGlobalFn: (key, fn, name = false, parent = window) => {
+          const pjaxEnable = false
+          if (!pjaxEnable && key.startsWith('pjax')) return
+
+          const globalFn = parent.globalFn || {}
+          const keyObj = globalFn[key] || {}
+    
+          if (name && keyObj[name]) return
+    
+          name = name || Object.keys(keyObj).length
+          keyObj[name] = fn
+          globalFn[key] = keyObj
+          parent.globalFn = globalFn
+        }
+      }
+    
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+      
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })()</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":150,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '挑战性任务-Sigaction',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-02 23:55:45'
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">挑战性任务-Sigaction</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-02T06:57:30.975Z" title="发表于 2024-07-02 14:57:30">2024-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-02T15:55:45.425Z" title="更新于 2024-07-02 23:55:45">2024-07-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OS/">OS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="挑战性任务-Sigaction"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="挑战性任务报告"><a href="#挑战性任务报告" class="headerlink" title="挑战性任务报告"></a>挑战性任务报告</h3><blockquote>
+<p>首先想要<del>吐槽一点</del>，由于要求不能对<code>Makefile</code>进行修改，导致不能将自己编写的文件链接入可执行文件当中，导致只能把自己写的函数挤压进已有文件当中，显得<del>有点丑陋</del></p>
+</blockquote>
+<p>本实验需要实现异步通信<code>Sigaction</code>，仅需关注32个普通信号中的6个信号，按照其信号处理函数或默认处理动作来处理，其余忽略即可。</p>
+<h4 id="信号数据存放位置"><a href="#信号数据存放位置" class="headerlink" title="信号数据存放位置"></a>信号数据存放位置</h4><p>由于考虑到不同进程需要存储自己的信号，便于在从内核态返回用户态时直接查询使用，故放置在进程控制块Env结构体内</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmgqK.png" alt="image-20240627161211466" style="zoom:80%;" />
+
+<h4 id="信号选择"><a href="#信号选择" class="headerlink" title="信号选择"></a>信号选择</h4><p>由于指导书要求<strong>同一普通信号在进程中最多只存在一个</strong>，故只要考虑不同信号间的优先级即可，同时要考虑当前进程正在处理的信号的屏蔽集。（ 对于<code>SIGKILL</code>信号，该信号不可被阻塞）</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmmAa.png" alt="image-20240627162006488" style="zoom:80%;" />
+
+<h4 id="内核态到用户态的准备"><a href="#内核态到用户态的准备" class="headerlink" title="内核态到用户态的准备"></a>内核态到用户态的准备</h4><p>参考助教在讨论区的建议，需要进程从内核态返回至用户态过程中检查是否有信号进行处理，若有，则处理完后再返回中断位置，这就需要使用重新申请一个栈帧用于当前信号的处理，设置传参等，以及保存进程发生中断时的现场。（一个比较好玩的地方在于当完成信号处理后会调用系统调用<code>syscall_set_trapframe</code>恢复原来的栈帧，这个时候既恢复现场（重新设置<code>cp0_epc</code>），又可以通过<code>eret</code>直接返回啦）</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmpQS.png" alt="image-20240627165156071" style="zoom:80%;" />
+
+<h4 id="掩码栈"><a href="#掩码栈" class="headerlink" title="掩码栈"></a>掩码栈</h4><p>因为考虑到进程正在处理信号会被打断，其他进程发送新的信号，返回至原进程时会转而处理优先级更高的信号，但是每个信号都有自己的掩码（需屏蔽同类型信号以及屏蔽集中的信号），进程需要根据当前正在处理的信号的掩码阻塞其余信号，但是上述情况下需要使用掩码栈通过压栈出栈的方式利用栈顶掩码解决。</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmJCN.png" alt="image-20240627163105484" style="zoom:80%;" />
+
+<h4 id="用户态函数入口设置"><a href="#用户态函数入口设置" class="headerlink" title="用户态函数入口设置"></a>用户态函数入口设置</h4><p>由于信号的处理函数位于用户态，需要像写时复制技术（COW）那样调用<code>cow_entry</code>解决（这个主要是因为微内核设计），需要使用相似的设计，于是采用<code>sigaction_entry</code>作为依据信号状态选择处理方式的用户态函数入口。</p>
+<p>选择放置在<code>libos.c</code>下的<code>libmain</code>调用系统调用<code>syscall_set_sigaction_entry</code>完成第一个进程的用户态信号处理函数入口的设置，子进程直接通过继承的方式进行设置。</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmRiC.png" alt="image-20240627163639269" style="zoom:80%;" />
+
+<p>系统调用<code>sys_exofork</code>：</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmt4L.png" alt="image-20240627163738125" style="zoom:80%;" />
+
+<h4 id="用户态函数入口"><a href="#用户态函数入口" class="headerlink" title="用户态函数入口"></a>用户态函数入口</h4><p>需要检查是否有相应的信号处理函数，若无，依据信号类型选择默认处理动作</p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPm46i.png" alt="image-20240627164937015" style="zoom:80%;" />
+
+<h4 id="信号注册函数-信号发送函数-信号集处理函数"><a href="#信号注册函数-信号发送函数-信号集处理函数" class="headerlink" title="信号注册函数 &amp; 信号发送函数 &amp; 信号集处理函数"></a>信号注册函数 &amp; 信号发送函数 &amp; 信号集处理函数</h4><ul>
+<li>对参数进行非法检查</li>
+<li>需要对进程的信号数据进行修改则构建系统调用</li>
+<li>信号发送函数对于<code>SIGILL</code>，<code>SIGSEGV</code>，<code>SIGCHLD</code>，<code>SIGSYS</code>在MOS原实现中直接panic，但在使用<code>sigaction</code>之后可直接使用<code>kill</code>发送信号</li>
+</ul>
+<p><strong>SIGILL</strong></p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmHbX.png" alt="image-20240627171145292" style="zoom:80%;" />
+
+<p><strong>SIGCHLD</strong></p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmLmt.png" alt="image-20240627171403575" style="zoom:80%;" />
+
+<p><strong>SIGSEGV</strong></p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmEYx.png" alt="image-20240627171108207" style="zoom:80%;" />
+
+<p><strong>SIGSYS</strong></p>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmQqj.png" alt="image-20240627171442352" style="zoom:80%;" />
+
+<h4 id="信号处理完毕"><a href="#信号处理完毕" class="headerlink" title="信号处理完毕"></a>信号处理完毕</h4><ul>
+<li>调用系统调用<code>syscall_sig_over</code>将取消相应信号的置位以及掩码栈的出栈</li>
+<li>调用系统调用<code>syscall_set_trapframe</code>设置为原栈帧直接放回至中断位置即可。</li>
+</ul>
+<h4 id="错误点"><a href="#错误点" class="headerlink" title="错误点"></a>错误点</h4><ul>
+<li>在异常返回函数中调用<code>do_sigaction</code>进行信号处理时，记得传参数（a0)</li>
+</ul>
+<img src="https://ooo.0x0.ooo/2024/07/02/OPmSAp.png" alt="image-20240627170044658" style="zoom:80%;" />
+
+<ul>
+<li>在信号集处理函数中记得对<code>__set</code>，<code>__signo</code>等参数进行细致的非法检查，但在<code>int sigprocmask(int __how, const sigset_t * __set, sigset_t * __oset);</code>信号集处理函数中传入<code>__set</code>，<code>__oset</code>即使是NULL并不非法，不存入即可。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/">https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OS%E5%AE%9E%E9%AA%8C/">OS实验</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/02/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A1/" title="OS_作业1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">OS_作业1</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab6_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab6"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Lab6</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab0"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab0</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab1</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab2_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab2</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab5_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab5</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab3_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab3</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab4_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1%E6%8A%A5%E5%91%8A"><span class="toc-number">1.</span> <span class="toc-text">挑战性任务报告</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E6%95%B0%E6%8D%AE%E5%AD%98%E6%94%BE%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">信号数据存放位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E9%80%89%E6%8B%A9"><span class="toc-number">1.2.</span> <span class="toc-text">信号选择</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%80%81%E5%88%B0%E7%94%A8%E6%88%B7%E6%80%81%E7%9A%84%E5%87%86%E5%A4%87"><span class="toc-number">1.3.</span> <span class="toc-text">内核态到用户态的准备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A9%E7%A0%81%E6%A0%88"><span class="toc-number">1.4.</span> <span class="toc-text">掩码栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%87%BD%E6%95%B0%E5%85%A5%E5%8F%A3%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">用户态函数入口设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%87%BD%E6%95%B0%E5%85%A5%E5%8F%A3"><span class="toc-number">1.6.</span> <span class="toc-text">用户态函数入口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E6%B3%A8%E5%86%8C%E5%87%BD%E6%95%B0-%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0-%E4%BF%A1%E5%8F%B7%E9%9B%86%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0"><span class="toc-number">1.7.</span> <span class="toc-text">信号注册函数 &amp; 信号发送函数 &amp; 信号集处理函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E5%AE%8C%E6%AF%95"><span class="toc-number">1.8.</span> <span class="toc-text">信号处理完毕</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%82%B9"><span class="toc-number">1.9.</span> <span class="toc-text">错误点</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第一单元总结">第一单元总结</a><time datetime="2024-07-02T16:03:53.898Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E5%9B%9B%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第四单元总结">第四单元总结</a><time datetime="2024-07-02T16:03:53.895Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%89%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第三单元总结">第三单元总结</a><time datetime="2024-07-02T16:03:53.892Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第二单元总结">第二单元总结</a><time datetime="2024-07-02T16:03:53.888Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/oopre%E6%80%BB%E7%BB%93/" title="OOpre总结">OOpre总结</a><time datetime="2024-07-02T16:03:41.211Z" title="发表于 2024-07-03 00:03:41">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const runMermaid = (ele) => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from(ele).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+    
+    codeMermaidEle.forEach(ele => {
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.innerHTML = `<pre class="mermaid-src" hidden>${ele.textContent}</pre>`
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+  
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
