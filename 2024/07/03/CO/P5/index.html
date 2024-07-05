@@ -1,0 +1,1824 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CO_P5 | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CPU 设计文档一、指令类型 解读：将指令按类型分类，并对指令按照功能划分  R类型指令    R类型指令 Op(31~26) Rs(25~21) Rt(20~16) Rd(15~11) Shamt(10~6) Func（5~0）     Add 000000 Rs Rt Rd XXXXX 100000   Sub 000000 Rs Rt Rd XXXXX 100010   Jr 000000">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CO_P5">
+<meta property="og:url" content="https://ascendira.github.io/2024/07/03/CO/P5/index.html">
+<meta property="og:site_name" content="Ascendira">
+<meta property="og:description" content="CPU 设计文档一、指令类型 解读：将指令按类型分类，并对指令按照功能划分  R类型指令    R类型指令 Op(31~26) Rs(25~21) Rt(20~16) Rd(15~11) Shamt(10~6) Func（5~0）     Add 000000 Rs Rt Rd XXXXX 100000   Sub 000000 Rs Rt Rd XXXXX 100010   Jr 000000">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg">
+<meta property="article:published_time" content="2024-07-03T10:09:05.516Z">
+<meta property="article:modified_time" content="2024-07-04T13:21:21.323Z">
+<meta property="article:author" content="Ascendira">
+<meta property="article:tag" content="实验">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/07/03/CO/P5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+      const saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+      
+      window.btf = {
+        saveToLocal: saveToLocal,
+        getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = url
+          script.async = true
+          script.onerror = reject
+          script.onload = script.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            script.onload = script.onreadystatechange = null
+            resolve()
+          }
+
+          Object.keys(attr).forEach(key => {
+            script.setAttribute(key, attr[key])
+          })
+
+          document.head.appendChild(script)
+        }),
+
+        getCSS: (url, id = false) => new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = url
+          if (id) link.id = id
+          link.onerror = reject
+          link.onload = link.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            link.onload = link.onreadystatechange = null
+            resolve()
+          }
+          document.head.appendChild(link)
+        }),
+
+        addGlobalFn: (key, fn, name = false, parent = window) => {
+          const pjaxEnable = false
+          if (!pjaxEnable && key.startsWith('pjax')) return
+
+          const globalFn = parent.globalFn || {}
+          const keyObj = globalFn[key] || {}
+    
+          if (name && keyObj[name]) return
+    
+          name = name || Object.keys(keyObj).length
+          keyObj[name] = fn
+          globalFn[key] = keyObj
+          parent.globalFn = globalFn
+        }
+      }
+    
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+      
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })()</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":150,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CO_P5',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-04 21:21:21'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CO_P5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-04T13:21:21.323Z" title="更新于 2024-07-04 21:21:21">2024-07-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CO/">CO</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CO_P5"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="CPU-设计文档"><a href="#CPU-设计文档" class="headerlink" title="CPU 设计文档"></a>CPU 设计文档</h1><h2 id="一、指令类型"><a href="#一、指令类型" class="headerlink" title="一、指令类型"></a>一、指令类型</h2><ul>
+<li>解读：将指令按类型分类，并对指令按照功能划分</li>
+</ul>
+<h3 id="R类型指令"><a href="#R类型指令" class="headerlink" title="R类型指令"></a>R类型指令</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>R类型指令</th>
+<th>Op(31~26)</th>
+<th>Rs(25~21)</th>
+<th>Rt(20~16)</th>
+<th>Rd(15~11)</th>
+<th>Shamt(10~6)</th>
+<th>Func（5~0）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add</td>
+<td>000000</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>Rd</td>
+<td>XXXXX</td>
+<td>100000</td>
+</tr>
+<tr>
+<td>Sub</td>
+<td>000000</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>Rd</td>
+<td>XXXXX</td>
+<td>100010</td>
+</tr>
+<tr>
+<td>Jr</td>
+<td>000000</td>
+<td>Rs</td>
+<td>00000</td>
+<td>00000</td>
+<td>00000</td>
+<td>001000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>add:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJauv.png" alt="Alt text"><br /><br><strong>sub:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJqFq.png" alt="Alt text"><br /><br><strong>jr:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJ5Pc.png" alt="Alt text"><br /></p>
+<h3 id="I类型指令"><a href="#I类型指令" class="headerlink" title="I类型指令"></a>I类型指令</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>I类型指令</th>
+<th>Op(31~26)</th>
+<th>Rs(25~21)</th>
+<th>Rt(20~16)</th>
+<th>immediate or address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ori</td>
+<td>001101</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>imm16</td>
+</tr>
+<tr>
+<td>Lui</td>
+<td>001111</td>
+<td>00000</td>
+<td>Rt</td>
+<td>imm16</td>
+</tr>
+<tr>
+<td>Lw</td>
+<td>100011</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>imm16</td>
+</tr>
+<tr>
+<td>Sw</td>
+<td>101011</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>imm16</td>
+</tr>
+<tr>
+<td>Beq</td>
+<td>000100</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>imm16</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>ori:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJB9r.png" alt="Alt text"> <br /><br><strong>lui:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJUUM.png" alt="Alt text"> <br /><br><strong>lw:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJWvG.png" alt="Alt text"><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJbd1.png" alt="Alt text"><br /><br><strong>sw:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJxOI.png" alt="Alt text"><br /><br><strong>beq:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJzND.png" alt="Alt text"><br /><br /></p>
+<h3 id="J类型指令"><a href="#J类型指令" class="headerlink" title="J类型指令"></a>J类型指令</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>J类型指令</th>
+<th>Op(31~26)</th>
+<th>26 address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>j</td>
+<td>000010</td>
+<td>target</td>
+</tr>
+<tr>
+<td>jal</td>
+<td>000011</td>
+<td>target</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>jal:</strong><br /><br><img src="https://ooo.0x0.ooo/2024/07/03/OPJFEF.png" alt="Alt text"></p>
+<h2 id="二、主要模块"><a href="#二、主要模块" class="headerlink" title="二、主要模块"></a>二、主要模块</h2><h3 id="mips（顶层模块）"><a href="#mips（顶层模块）" class="headerlink" title="mips（顶层模块）"></a>mips（顶层模块）</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clk</td>
+<td>I</td>
+<td>时钟信号，控制所有需clk信号输入的模块</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>I</td>
+<td>同步复位信号，控制所有需reset信号输入的模块</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Conroller-控制器"><a href="#Conroller-控制器" class="headerlink" title="Conroller(控制器)"></a>Conroller(控制器)</h3><h4 id="控制信号类型及含义"><a href="#控制信号类型及含义" class="headerlink" title="控制信号类型及含义"></a>控制信号类型及含义</h4><blockquote>
+<p>Branch<br>&gt;</p>
+<blockquote>
+<ul>
+<li>`Branch_normal :  0，PC输入选择加法器Add输出（PC+4）</li>
+<li>`Branch_Beq 1: 若Zero=1，PC输入选择加法器Nadd</li>
+<li>`Branch_Jal 2: PC输入选择Jal_Adr</li>
+<li><p>`Branch_Jr 3: PC输入选择Rdata1<br>RegDst</p>
+</li>
+<li><p>`RegDst_Rd: 选择Rd</p>
+</li>
+<li>`RegDst_Rt: 选择Rt</li>
+<li>`RegDst_31：选择31（jal指令）<br>RegWirte</li>
+</ul>
+<p>1: 表示寄存器堆可写入</p>
+</blockquote>
+<p>MemtoReg<br>&gt;</p>
+<blockquote>
+<ul>
+<li>`MemtoReg_ALU: 选择 ALU 输出</li>
+<li>`MemtoReg_shift: 选择shift输出</li>
+<li>`MemtoReg_DM: 选择数据存储器DM输出</li>
+<li>`MemtoReg_Adder:选择Adder（地址加法器）输出</li>
+</ul>
+</blockquote>
+<p>ALUSrc<br>&gt;</p>
+<blockquote>
+<ul>
+<li>`ALUSrc_ReadData2: 选择寄存器堆的 Read data2 输出</li>
+<li>`ALUSrc_SiExt: 选择Signext输入</li>
+<li>`ALUSrc_ZeExt：选择zero_ext输入</li>
+</ul>
+</blockquote>
+<p>ALUOper<br>&gt;</p>
+<blockquote>
+<ul>
+<li>`ALU_add: ALU运算类型 —— +</li>
+<li>`ALU_sub: ALU运算类型 —— -</li>
+<li>`ALU_or: ALU运算类型 —— |</li>
+</ul>
+</blockquote>
+<p>MemRead<br>&gt;</p>
+<blockquote>
+<ul>
+<li>0:表示DM不可写入</li>
+<li>1:表示DM可写入</li>
+</ul>
+</blockquote>
+<p>MemWrite<br>&gt;</p>
+<blockquote>
+<ul>
+<li>0:表示DM不可写入</li>
+<li>1:表示DM可写入</li>
+</ul>
+</blockquote>
+<p>shiftSrc<br>&gt;</p>
+<blockquote>
+<ul>
+<li>`shiftSrc_shamt: shamt（shift）选择shamt输入</li>
+<li>`shiftSrc_0x10：shamt(shift) 选择0x10输入</li>
+<li>`shiftSrc_0：shamt(shift) 选择0输入</li>
+</ul>
+</blockquote>
+</blockquote>
+<p>（in.shift根据ALUSrc决定）</p>
+<blockquote>
+<p>Tnew,rs_Tuse,rt_Tuse:根据指令输出<br>&gt;</p>
+<blockquote>
+<ul>
+<li>Tnew: 表示位于E级寄存器的指令经过Tnew个时钟周期可以算出结果并且存储到下一级流水级寄存器中。</li>
+<li>rs_Tuse,rt_Tuse:表示该指令位于 D 级的时候，再经过多少个时钟周期就必须要使用Rs，Rt地址对应的数据。</li>
+</ul>
+</blockquote>
+</blockquote>
+<h4 id="Controller-（指令实现控制信号的转换）"><a href="#Controller-（指令实现控制信号的转换）" class="headerlink" title="Controller （指令实现控制信号的转换）"></a>Controller （指令实现控制信号的转换）</h4><ul>
+<li>x表示指令实现与该输入无关</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>Opcode</th>
+<th>Branch</th>
+<th>RegDst</th>
+<th>RegWrite</th>
+<th>MemtoReg</th>
+<th>ALUSrc</th>
+<th>ALUOp</th>
+<th>MemWrite</th>
+<th>MemCate</th>
+<th>shiftSrc</th>
+<th>Tnew</th>
+<th>rs_Tuse</th>
+<th>rt_Tuse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add/Sub</td>
+<td>000000</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Lw</td>
+<td>100011</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>2</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Sw</td>
+<td>101011</td>
+<td>0</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>x</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Beq</td>
+<td>000100</td>
+<td>1</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Ori</td>
+<td>001101</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>3</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>1</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Lui</td>
+<td>001111</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>1</td>
+<td>0</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Nop</td>
+<td>000000</td>
+<td>0</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Jal</td>
+<td>000011</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Jr</td>
+<td>000000</td>
+<td>3</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>x</td>
+<td>x</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="IFU-取指令单元"><a href="#IFU-取指令单元" class="headerlink" title="IFU (取指令单元)"></a>IFU (取指令单元)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td>I</td>
+<td>指令存储器(im_reg)所有地址的存储值清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>enable_PC</td>
+<td>I</td>
+<td>写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据（不可更改）</td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>I</td>
+<td>PC值分支跳转指令判断（4位）</td>
+</tr>
+<tr>
+<td>Zero</td>
+<td>I</td>
+<td>beq指令判断PC是否跳转条件（1位）</td>
+</tr>
+<tr>
+<td>index</td>
+<td>I</td>
+<td>跳转指令的target中间值（26位）</td>
+</tr>
+<tr>
+<td>immSiExt</td>
+<td>I</td>
+<td>16位立即数有符号扩展输入（32位）</td>
+</tr>
+<tr>
+<td>D_pc</td>
+<td>I</td>
+<td>D级指令所对应的PC地址（32位）</td>
+</tr>
+<tr>
+<td>ReadData1</td>
+<td>O</td>
+<td>GRF（寄存器堆）中Read register1地址对应寄存器的输出</td>
+</tr>
+<tr>
+<td>pc</td>
+<td>O</td>
+<td>PC当前值（32位）</td>
+</tr>
+<tr>
+<td>instr</td>
+<td>O</td>
+<td>PC地址对应IM(指令存储器)的指令输出(32位)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="IF-ID（D级寄存器）"><a href="#IF-ID（D级寄存器）" class="headerlink" title="IF_ID（D级寄存器）"></a>IF_ID（D级寄存器）</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>I</td>
+<td>寄存器存储值清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>enable_D</td>
+<td>I</td>
+<td>写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据（不可更改）</td>
+</tr>
+<tr>
+<td>F_pc</td>
+<td>I</td>
+<td>F级指令对应的PC地址（32位）</td>
+</tr>
+<tr>
+<td>F_instr</td>
+<td>I</td>
+<td>F级指令PC地址对应的指令(32位)</td>
+</tr>
+<tr>
+<td>D_pc</td>
+<td>O</td>
+<td>D级指令对应的PC地址（32位）</td>
+</tr>
+<tr>
+<td>D_instr</td>
+<td>O</td>
+<td>D级指令PC地址对应的指令(32位)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Stall-暂停信号控制器"><a href="#Stall-暂停信号控制器" class="headerlink" title="Stall (暂停信号控制器)"></a>Stall (暂停信号控制器)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rs_Tuse</td>
+<td>I</td>
+<td>D级指令对应的rs_Tuse（4位）</td>
+</tr>
+<tr>
+<td>rt_Tuse</td>
+<td>I</td>
+<td>D级指令对应的rt_Tuse（4位）</td>
+</tr>
+<tr>
+<td>E_Tnew</td>
+<td>I</td>
+<td>E级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>M_Tnew</td>
+<td>I</td>
+<td>M级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>W_Tnew</td>
+<td>I</td>
+<td>W级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>Rs</td>
+<td>I</td>
+<td>D级指令对应的Rs（5位）</td>
+</tr>
+<tr>
+<td>Rt</td>
+<td>I</td>
+<td>D级指令对应的Rt（5位）</td>
+</tr>
+<tr>
+<td>E_WriteRes</td>
+<td>I</td>
+<td>E级指令执行写入GRF操作时的地址（5位）</td>
+</tr>
+<tr>
+<td>M_WriteRes</td>
+<td>I</td>
+<td>M级指令执行写入GRF操作时的地址（5位）</td>
+</tr>
+<tr>
+<td>W_WriteRes</td>
+<td>I</td>
+<td>W级指令执行写入GRF操作时的地址（5位）</td>
+</tr>
+<tr>
+<td>E_RegWrite</td>
+<td>I</td>
+<td>E级指令是否执行写入GRF操作，<br /> 1: 写入 <br /> 0： 不写入</td>
+</tr>
+<tr>
+<td>M_RegWrite</td>
+<td>I</td>
+<td>M级指令是否执行写入GRF操作，<br /> 1: 写入 <br /> 0： 不写入</td>
+</tr>
+<tr>
+<td>W_RegWrite</td>
+<td>I</td>
+<td>W级指令是否执行写入GRF操作，<br /> 1: 写入 <br /> 0： 不写入</td>
+</tr>
+<tr>
+<td>enable_PC</td>
+<td>O</td>
+<td>IFU模块中的PC寄存器写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据（不可更改）</td>
+</tr>
+<tr>
+<td>enable_D</td>
+<td>O</td>
+<td>D级寄存器写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据（不可更改）</td>
+</tr>
+<tr>
+<td>enable_PC</td>
+<td>O</td>
+<td>IFU模块中的PC寄存器写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据（不可更改）</td>
+</tr>
+<tr>
+<td>reset_E</td>
+<td>O</td>
+<td>E级寄存器存储值清零<br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="shift-移位器"><a href="#shift-移位器" class="headerlink" title="shift(移位器)"></a>shift(移位器)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input</td>
+<td>I</td>
+<td>操作数</td>
+</tr>
+<tr>
+<td>shamt</td>
+<td>I</td>
+<td>偏移量（5位）</td>
+</tr>
+<tr>
+<td>output</td>
+<td>I</td>
+<td>操作数移位后输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="CMP（比较器）"><a href="#CMP（比较器）" class="headerlink" title="CMP（比较器）"></a>CMP（比较器）</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ReadData1</td>
+<td>I</td>
+<td>操作数1</td>
+</tr>
+<tr>
+<td>ReadData2</td>
+<td>I</td>
+<td>操作数2</td>
+</tr>
+<tr>
+<td>Zero</td>
+<td>O</td>
+<td>比较ReadData1和ReadData2，<br /> 1: 相等 <br /> 0： 不相等</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="GRF-寄存器堆"><a href="#GRF-寄存器堆" class="headerlink" title="GRF(寄存器堆)"></a>GRF(寄存器堆)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td>I</td>
+<td>复位信号，将寄存器的值全部清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>WE</td>
+<td>I</td>
+<td>写使能信号 <br /> 1: 可写入数据 <br /> 0： 不可写入数据</td>
+</tr>
+<tr>
+<td>ReadRes1</td>
+<td>I</td>
+<td>读出地址输入(5位),读出到Read Data1</td>
+</tr>
+<tr>
+<td>ReadRes2</td>
+<td>I</td>
+<td>读出地址输入(5位),读出到Read Data2</td>
+</tr>
+<tr>
+<td>WriteRes</td>
+<td>I</td>
+<td>写入地址输入(5位)</td>
+</tr>
+<tr>
+<td>WriteData</td>
+<td>I</td>
+<td>写入数据（32位）</td>
+</tr>
+<tr>
+<td>WPC</td>
+<td>I</td>
+<td>输入当前pc地址</td>
+</tr>
+<tr>
+<td>ReadData1</td>
+<td>O</td>
+<td>Read register1地址对应寄存器的输出</td>
+</tr>
+<tr>
+<td>ReadData2</td>
+<td>O</td>
+<td>Read register2地址对应寄存器的输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="ID-EX-E级寄存器"><a href="#ID-EX-E级寄存器" class="headerlink" title="ID_EX (E级寄存器)"></a>ID_EX (E级寄存器)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>I</td>
+<td>复位信号，将寄存器的值全部清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>D_pc</td>
+<td>I</td>
+<td>D级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>reset_E</td>
+<td>I</td>
+<td>E级寄存器的复位信号，将寄存器的值全部清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>D_ReadRes1</td>
+<td>I</td>
+<td>D级指令对应的Rs,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>D_ReadRes2</td>
+<td>I</td>
+<td>D级指令对应的Rt,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>D_ReadData1</td>
+<td>I</td>
+<td>D级指令D_ReadRes1地址对应寄存器的输出（32位）</td>
+</tr>
+<tr>
+<td>D_ReadData2</td>
+<td>I</td>
+<td>D级指令D_ReadRes2地址对应寄存器的输出（32位）</td>
+</tr>
+<tr>
+<td>D_WriteRes</td>
+<td>I</td>
+<td>D级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>D_WriteData</td>
+<td>I</td>
+<td>D级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>D_ExtShift</td>
+<td>I</td>
+<td>D级指令的extend和shift模块输出（32位）</td>
+</tr>
+<tr>
+<td>D_MemtoReg</td>
+<td>I</td>
+<td>D级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>D_MemWrite</td>
+<td>I</td>
+<td>D级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>D_MemCate</td>
+<td>I</td>
+<td>D级指令写入DM的指令类型（4位）</td>
+</tr>
+<tr>
+<td>D_ALUOper</td>
+<td>I</td>
+<td>D级指令运算类型（4位）</td>
+</tr>
+<tr>
+<td>D_RegWrite</td>
+<td>I</td>
+<td>D级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>D_ALUSrc</td>
+<td>I</td>
+<td>D级指令ALU模块的B端口输入数据类型（4位）</td>
+</tr>
+<tr>
+<td>D_Tnew</td>
+<td>I</td>
+<td>D级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>E_pc</td>
+<td>I</td>
+<td>E级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>E_ReadRes1</td>
+<td>I</td>
+<td>E级指令对应的Rs,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>E_ReadRes2</td>
+<td>I</td>
+<td>E级指令对应的Rt,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>E_ReadData1</td>
+<td>I</td>
+<td>E级指令D_ReadRes1地址对应寄存器的输出（32位）</td>
+</tr>
+<tr>
+<td>E_ReadData2</td>
+<td>I</td>
+<td>E级指令D_ReadRes2地址对应寄存器的输出（32位）</td>
+</tr>
+<tr>
+<td>E_WriteRes</td>
+<td>IE级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>E_WriteData</td>
+<td>I</td>
+<td>E级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>E_ExtShift</td>
+<td>I</td>
+<td>E级指令的extend和shift模块输出（32位）</td>
+</tr>
+<tr>
+<td>E_MemtoReg</td>
+<td>I</td>
+<td>E级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>E_MemWrite</td>
+<td>I</td>
+<td>E级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>E_MemCate</td>
+<td>I</td>
+<td>E级指令写入DM的指令类型（4位）</td>
+</tr>
+<tr>
+<td>E_ALUOper</td>
+<td>I</td>
+<td>E级指令运算类型（4位）</td>
+</tr>
+<tr>
+<td>E_RegWrite</td>
+<td>I</td>
+<td>E级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>E_ALUSrc</td>
+<td>I</td>
+<td>E级指令ALU模块的B端口输入数据类型（4位）</td>
+</tr>
+<tr>
+<td>E_Tnew</td>
+<td>I</td>
+<td>E级指令对应的Tnew（4位）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="ALU-算数逻辑单位"><a href="#ALU-算数逻辑单位" class="headerlink" title="ALU(算数逻辑单位)"></a>ALU(算数逻辑单位)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>I</td>
+<td>操作数1（32位）</td>
+</tr>
+<tr>
+<td>B</td>
+<td>I</td>
+<td>操作数2（32位）</td>
+</tr>
+<tr>
+<td>ALUOper</td>
+<td>I</td>
+<td>ALU功能选择（4位）</td>
+</tr>
+<tr>
+<td>Result</td>
+<td>O</td>
+<td>结果输出（32位）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="EX-MEM-M级寄存器"><a href="#EX-MEM-M级寄存器" class="headerlink" title="EX_MEM(M级寄存器)"></a>EX_MEM(M级寄存器)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>I</td>
+<td>复位信号，将寄存器的值全部清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>ALU_out</td>
+<td>I</td>
+<td>D级指令ALU的输出结果（32位）</td>
+</tr>
+<tr>
+<td>E_pc</td>
+<td>I</td>
+<td>E级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>E_ReadRes1</td>
+<td>I</td>
+<td>E级指令对应的Rs,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>E_ReadRes2</td>
+<td>I</td>
+<td>E级指令对应的Rt,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>E_ReadData2</td>
+<td>I</td>
+<td>E级指令D_ReadRes2地址对应寄存器的输出，需转发（32位）</td>
+</tr>
+<tr>
+<td>E_WriteRes</td>
+<td>I</td>
+<td>E级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>E_WriteData</td>
+<td>I</td>
+<td>E级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>E_MemtoReg</td>
+<td>I</td>
+<td>E级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>E_MemWrite</td>
+<td>I</td>
+<td>E级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>E_MemAddress</td>
+<td>I</td>
+<td>E级指令写入DM的地址（32位）</td>
+</tr>
+<tr>
+<td>E_MemCate</td>
+<td>I</td>
+<td>E级指令写入DM的指令类型（4位）</td>
+</tr>
+<tr>
+<td>E_RegWrite</td>
+<td>I</td>
+<td>E级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>E_Tnew</td>
+<td>I</td>
+<td>E级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>M_pc</td>
+<td>O</td>
+<td>M级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>M_ReadRes1</td>
+<td>O</td>
+<td>M级指令对应的Rs,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>M_ReadRes2</td>
+<td>O</td>
+<td>M级指令对应的Rt,GRF读出地址（5位）</td>
+</tr>
+<tr>
+<td>M_ReadData2</td>
+<td>O</td>
+<td>M级指令D_ReadRes2地址对应寄存器的输出（32位）</td>
+</tr>
+<tr>
+<td>M_WriteRes</td>
+<td>O</td>
+<td>M级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>M_WriteData</td>
+<td>O</td>
+<td>M级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>M_MemtoReg</td>
+<td>O</td>
+<td>M级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>M_MemWrite</td>
+<td>O</td>
+<td>M级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>M_MemAddress</td>
+<td>O</td>
+<td>M级指令写入DM的地址（32位）</td>
+</tr>
+<tr>
+<td>M_MemCate</td>
+<td>O</td>
+<td>M级指令写入DM的指令类型（4位）</td>
+</tr>
+<tr>
+<td>M_RegWrite</td>
+<td>O</td>
+<td>M级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>M_Tnew</td>
+<td>O</td>
+<td>M级指令对应的Tnew（4位）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="DM-数据存储器"><a href="#DM-数据存储器" class="headerlink" title="DM(数据存储器)"></a>DM(数据存储器)</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>pc</td>
+<td>O</td>
+<td>M级指令的PC当前值（32位）</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td>I</td>
+<td>数据存储器(RAM)所有地址的存储值清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>MemWrite</td>
+<td>I</td>
+<td>写使能信号,<br /> 1: 可写入数据 <br /> 0： 不可写入数据</td>
+</tr>
+<tr>
+<td>MemCate</td>
+<td>I</td>
+<td>判断向数据储存器写入数据的操作指令类型（4位）</td>
+</tr>
+<tr>
+<td>Address</td>
+<td>I</td>
+<td>读写地址（12位）</td>
+</tr>
+<tr>
+<td>WriteData</td>
+<td>I</td>
+<td>写入数据（32位）</td>
+</tr>
+<tr>
+<td>ReadData_DM</td>
+<td>O</td>
+<td>Address地址对应数据储存器（RAM）的储存值输出</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="MEM-WB"><a href="#MEM-WB" class="headerlink" title="MEM_WB"></a>MEM_WB</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clk</td>
+<td>I</td>
+<td>时钟信号</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>I</td>
+<td>复位信号，将寄存器的值全部清零 <br /> 1: 复位 <br /> 0：无效</td>
+</tr>
+<tr>
+<td>M_pc</td>
+<td>I</td>
+<td>M级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>M_WriteRes</td>
+<td>I</td>
+<td>M级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>M_WriteData</td>
+<td>I</td>
+<td>M级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>M_MemtoReg</td>
+<td>I</td>
+<td>M级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>M_MemWrite</td>
+<td>I</td>
+<td>M级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>M_RegWrite</td>
+<td>I</td>
+<td>M级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>M_Tnew</td>
+<td>I</td>
+<td>M级指令对应的Tnew（4位）</td>
+</tr>
+<tr>
+<td>ReadData_DM</td>
+<td>I</td>
+<td>M级指令Address地址对应数据储存器（RAM）的储存值输出</td>
+</tr>
+<tr>
+<td>W_pc</td>
+<td>O</td>
+<td>W级指令对应的pc地址</td>
+</tr>
+<tr>
+<td>W_WriteRes</td>
+<td>O</td>
+<td>W级指令写入GRF的地址(5位)</td>
+</tr>
+<tr>
+<td>W_WriteData</td>
+<td>O</td>
+<td>W级指令写入GRF的数据（32位）</td>
+</tr>
+<tr>
+<td>W_MemtoReg</td>
+<td>O</td>
+<td>W级指令存入GRF的数据类型（4位）</td>
+</tr>
+<tr>
+<td>W_MemWrite</td>
+<td>O</td>
+<td>W级指令是否写入DM <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>W_RegWrite</td>
+<td>O</td>
+<td>W级指令是否可写入GRF <br /> 1: 可写入 <br /> 0：不可写入</td>
+</tr>
+<tr>
+<td>W_Tnew</td>
+<td>O</td>
+<td>W级指令对应的Tnew（4位）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="三、数据通路"><a href="#三、数据通路" class="headerlink" title="三、数据通路"></a>三、数据通路</h2><p><img src="https://ooo.0x0.ooo/2024/07/03/OPJ9o1.png" alt="Alt text"></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>A</th>
+<th>B</th>
+<th>PC</th>
+<th>IM Adr</th>
+<th>Reg1</th>
+<th>Reg2</th>
+<th>Wreg</th>
+<th>Wdata</th>
+<th>A</th>
+<th>B</th>
+<th>DM Adr</th>
+<th>DM Wdata</th>
+<th>Sign-ext</th>
+<th>A</th>
+<th>B</th>
+<th>shift</th>
+<th>ext</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>Adder:</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>ALU:</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Nadder:</td>
+<td></td>
+<td>/</td>
+</tr>
+<tr>
+<td>R型指令与访存</td>
+<td>PC</td>
+<td>4</td>
+<td><strong>Adder</strong></td>
+<td>PC</td>
+<td>Rs</td>
+<td>Rt</td>
+<td><strong>Rd</strong></td>
+<td><strong>ALU</strong></td>
+<td>Rdata1</td>
+<td><strong>Rdata2</strong></td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td><strong>/!</strong></td>
+<td>/</td>
+</tr>
+<tr>
+<td>Lw</td>
+<td>PC</td>
+<td>4</td>
+<td>Adder</td>
+<td>PC</td>
+<td>Rs</td>
+<td>/</td>
+<td>Rt</td>
+<td>DM</td>
+<td>Rdata1</td>
+<td>Sign_ext</td>
+<td>ALU</td>
+<td>/</td>
+<td>imm16</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td>Sw</td>
+<td>PC</td>
+<td>4</td>
+<td>Adder</td>
+<td>PC</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>/</td>
+<td>/</td>
+<td>Rdata1</td>
+<td>Sign_ext</td>
+<td>ALU</td>
+<td>Rdata2</td>
+<td>imm16</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td>Beq</td>
+<td>PC</td>
+<td>4</td>
+<td><strong>Adder/Nadder</strong></td>
+<td>PC</td>
+<td>Rs</td>
+<td>Rt</td>
+<td>/</td>
+<td>/</td>
+<td>Rdata1</td>
+<td>Rdata2</td>
+<td>/</td>
+<td>/</td>
+<td>imm16</td>
+<td>Adder</td>
+<td>Sign-imm16(左移2)</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td>Ori</td>
+<td>PC</td>
+<td>4</td>
+<td>Adder</td>
+<td>PC</td>
+<td>Rs</td>
+<td>/</td>
+<td>Rt</td>
+<td>ALU</td>
+<td>Rdata1</td>
+<td>zero_ext</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>imm16</td>
+</tr>
+<tr>
+<td>Lui</td>
+<td>PC</td>
+<td>4</td>
+<td>Adder</td>
+<td>PC</td>
+<td>/</td>
+<td>/</td>
+<td>Rt</td>
+<td>shift</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>imm16</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td>Nop</td>
+<td>PC</td>
+<td>4</td>
+<td>Adder</td>
+<td>PC</td>
+<td>/</td>
+<td>Rt</td>
+<td>Rd</td>
+<td>shift</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>Rdata2</td>
+<td>/</td>
+</tr>
+<tr>
+<td>jal</td>
+<td>PC</td>
+<td>4</td>
+<td>Jal_Adr</td>
+<td>PC</td>
+<td>/</td>
+<td>/</td>
+<td>31</td>
+<td>Adder</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+</tr>
+<tr>
+<td>jr</td>
+<td>/</td>
+<td>/</td>
+<td>Rdata1</td>
+<td>PC</td>
+<td>Rs</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+<td>/</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="四、测试"><a href="#四、测试" class="headerlink" title="四、测试"></a>四、测试</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ori $s0,$0,0</span><br><span class="line">ori $s1,$0,20</span><br><span class="line">ori $s2,$0,40</span><br><span class="line">lui $t0,123</span><br><span class="line">lui $t1,32</span><br><span class="line">lui $t2,32</span><br><span class="line">add $a2,$a2,$t0</span><br><span class="line">add $a2,$a2,$t0</span><br><span class="line">sub $a2,$a2,$t1</span><br><span class="line">sw $a2,0($s1)</span><br><span class="line">lw $a3,0($s1)</span><br><span class="line">ori $a2,$a3,45</span><br><span class="line">sw $a2,0($s0)</span><br><span class="line">lw $a3,0($s0)</span><br><span class="line">sw $a3,0($s0)</span><br><span class="line">add $a2,$a2,$t0</span><br><span class="line">sw $a2,0($s1)</span><br><span class="line">beq $t1,$t2,tag1</span><br><span class="line">ori $a2,$a2,231</span><br><span class="line">ori $t4,$0,45</span><br><span class="line">nop</span><br><span class="line">tag1:sub $a2,$a1,$a0</span><br><span class="line">ori $t4,$0,67</span><br><span class="line">jal tag2</span><br><span class="line">ori $t4,$0,98</span><br><span class="line">lui $t4,108</span><br><span class="line">tag2: </span><br><span class="line">sw $t4,0($s1)</span><br><span class="line">lw $t2,0($s1)</span><br><span class="line">jr $ra</span><br><span class="line">nop</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Mars导出的机械码（储存在code.txt中的文件）：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">34100000</span><br><span class="line">34110014</span><br><span class="line">34120028</span><br><span class="line">3c08007b</span><br><span class="line">3c090020</span><br><span class="line">3c0a0020</span><br><span class="line">00c83020</span><br><span class="line">00c83020</span><br><span class="line">00c93022</span><br><span class="line">ae260000</span><br><span class="line">8e270000</span><br><span class="line">34e6002d</span><br><span class="line">ae060000</span><br><span class="line">8e070000</span><br><span class="line">ae070000</span><br><span class="line">00c83020</span><br><span class="line">ae260000</span><br><span class="line">112a0003</span><br><span class="line">34c600e7</span><br><span class="line">340c002d</span><br><span class="line">00000000</span><br><span class="line">00a43022</span><br><span class="line">340c0043</span><br><span class="line">0c000c1a</span><br><span class="line">340c0062</span><br><span class="line">3c0c006c</span><br><span class="line">ae2c0000</span><br><span class="line">8e2a0000</span><br><span class="line">03e00008</span><br><span class="line">00000000</span><br></pre></td></tr></table></figure>
+<p>利用$readmemh指令读取code.txt中的机械码指令并储存在IFU_mips模块的指令存储器im_reg(4096个32位寄存器)当中，运行mips顶层模块，通过$display指令检测存入寄存器堆（GRF）和数据存储器（DM）时的pc地址，相应数据以及存入的寄存器或数据存储器地址，将结果与Mars对拍运行时的数据做比对，以此检测Verilog代码编写的单周期CPU是否正确。</p>
+<h2 id="五、思考题"><a href="#五、思考题" class="headerlink" title="五、思考题"></a>五、思考题</h2><h3 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h3><blockquote>
+<p>若发生流水线冒险行为，则需要进行暂停操作，从而保证提前分支判断时进行比较的数据是已更新后的数据（可以在通过转发减少暂停，提高效率，但无法减少产生新数据所需的暂停），这样就导致提前分支判断所需的周期数与未提前分支判断时所需的周期数相同，未提高效率。<br><br><strong>下列例子可见：</strong> <br><br>在执行beq指令时，add指令对beq指令的比较数据进行修改，其Tnew = 1，后者Tuse = 0，则此时需要暂停一个周期，才能将add指令于E级算出的结果转发至D级（beq指令所处级数），未提前分支判断时当beq指令流水至E级时也可进行分支判断，此时两者效率相同。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ori $t0,123</span><br><span class="line">ori $t1,23</span><br><span class="line">ori $t2,100</span><br><span class="line">add $t2,$t2,$t1</span><br><span class="line">beq $t0,$t2,tag1</span><br><span class="line">nop</span><br><span class="line">sub $a0,$t0,$t1</span><br><span class="line">tag1:add $a0,$t0,$t1</span><br></pre></td></tr></table></figure>
+<h3 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h3><blockquote>
+<p>因为延迟槽（为保证F级指令不被作废）的存在，从而导致jal指令的下一条指令为延迟槽，而延迟槽指令在jal指令在实现跳转过程中已经进入F级流水寄存器中（被执行），故通过jr指令链接调回原指令的下一条指令时，应是延迟槽指令的下一条指令，其对应的PC地址为jal指令对应的PC地址PC_jal + 8;</p>
+</blockquote>
+<h3 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h3><blockquote>
+<p>因为如果转发数据源自功能部件（DM,ALU），则导致在该时钟周期内，既要包含功能部件的运行时间，也要包含需要转发数据的部件的运行时间，从而延长了时钟周期，导致违背了流水线寄存器初始的设计理念</p>
+</blockquote>
+<h3 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h3><blockquote>
+<p>因为在某一个时钟周期内，可能某一个寄存器文件需要在 D 级和 W 级同时被使用（读写）时并且读和写的寄存器为同一个寄存器时，需要保证当读寄存器时的地址与同周期写寄存器的地址相同时，我们将读取的内容改为写寄存器的内容，而不是该地址可以索引到的寄存器文件中的值。<br><br>我们在设计GRF时保证其能同时进行读和写操作，并且对同一寄存器文件进行操作，以及将W级需要写入GRF的数据转发回GRF的写入数据端口，从而实现内部转发。</p>
+</blockquote>
+<h3 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h3><blockquote>
+<p>需求者：NPC模块，CMP模块，ALU模块，DM模块，GRF模块。<br><br>供给者：D级，E级，M级，W级流水线寄存器，GRF可看做最后一级流水线寄存器（其也可转发）<br><br>转发数据通路：</p>
+</blockquote>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>NPC_ReadData1</th>
+<th>CMP_ReadData1</th>
+<th>CMP_ReadData2</th>
+<th>ALU_A</th>
+<th>ALU_B</th>
+<th>DM_WriteData</th>
+<th>GRF_WriteData</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D E M W GRF</td>
+<td>E M W</td>
+<td>E M W</td>
+<td>M W</td>
+<td>M W</td>
+<td>W</td>
+<td>W</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h3><blockquote>
+<p><strong>算术/逻辑运算指令:</strong></p>
+<blockquote>
+<p>对ALU运算类型进行添加<br><br>对ALU模块的输入端口进行添加或修改<br><br>添加新的模块，如shift模块，完成移位操作<br><br>考虑是否需要增加转发</p>
+</blockquote>
+<p><strong>数据传输指令：</strong></p>
+<blockquote>
+<p>需考虑寄存器与寄存器之间的数据传输，考虑是否要增加转发，以及其控制信号的设置</p>
+</blockquote>
+<p><strong>程序控制指令:</strong></p>
+<blockquote>
+<p>增加新的提前分支判断模块，为条件判断提供依据<br><br>添加新的NPC模块的输入端口来源<br>考虑是否需要增加转发</p>
+</blockquote>
+<p><strong>浮点运算指令:</strong></p>
+<blockquote>
+<p>暂不考虑</p>
+</blockquote>
+</blockquote>
+<h3 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h3><blockquote>
+<p><strong>译码方式：</strong></p>
+<blockquote>
+<p>集中式译码</p>
+</blockquote>
+<p><strong>译码器架构：</strong></p>
+<blockquote>
+<p>通过指令对应的控制信号的取值的方式，逐个对每一条指令编写其控制信号。译码器存放在D级，每一条指令进入D级，将指令输入译码器，产生控制信号，再将该控制信号输入E级流水级寄存器中，进入下一级（E级），在存入下一级流水级寄存器之前，对控制信号进行筛选，判断后面的流水级是否需要该控制信号，筛选出有需要的控制信号进行流水。</p>
+</blockquote>
+<p><strong>优势:</strong><br>&gt;</p>
+<blockquote>
+<ol>
+<li>可以统一对指令的每一条控制信号进行管理，避免使用分布式译码导致控制信号分布在各流水级，导致控制信号的分散，不利于统一编写，导致遗漏。</li>
+<li>资源利用率高，使用一个控制器（译码器）</li>
+</ol>
+</blockquote>
+<p><strong>不足：</strong></p>
+<blockquote>
+<p>相较于分布式译码，集中式译码的结构简洁性，项目维护性，代码可读性低，后者仅仅一个译码器，同时需要流水控制信号，结构不如每一流水级都有本流水级控制器简洁；后者需要检查每一级流水级寄存器的控制信号，来判断并修改该流水级所用控制信号，不利于维护；代码可读性差。</p>
+</blockquote>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/07/03/CO/P5/">https://ascendira.github.io/2024/07/03/CO/P5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a></div><div class="post_share"><div class="social-share" data-image="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/04/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">OS_作业2</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/03/CO/P6/" title="CO_P6"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CO_P6</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab0"><img class="cover" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab0</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab1</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab2_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab2"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab2</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/" title="挑战性任务-Sigaction"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">挑战性任务-Sigaction</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab5_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab5"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab5</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab3_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab3"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab3</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CPU-%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3"><span class="toc-number">1.</span> <span class="toc-text">CPU 设计文档</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%8C%87%E4%BB%A4%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">一、指令类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#R%E7%B1%BB%E5%9E%8B%E6%8C%87%E4%BB%A4"><span class="toc-number">1.1.1.</span> <span class="toc-text">R类型指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I%E7%B1%BB%E5%9E%8B%E6%8C%87%E4%BB%A4"><span class="toc-number">1.1.2.</span> <span class="toc-text">I类型指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#J%E7%B1%BB%E5%9E%8B%E6%8C%87%E4%BB%A4"><span class="toc-number">1.1.3.</span> <span class="toc-text">J类型指令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BB%E8%A6%81%E6%A8%A1%E5%9D%97"><span class="toc-number">1.2.</span> <span class="toc-text">二、主要模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mips%EF%BC%88%E9%A1%B6%E5%B1%82%E6%A8%A1%E5%9D%97%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">mips（顶层模块）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conroller-%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-number">1.2.2.</span> <span class="toc-text">Conroller(控制器)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E4%BF%A1%E5%8F%B7%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%90%AB%E4%B9%89"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">控制信号类型及含义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Controller-%EF%BC%88%E6%8C%87%E4%BB%A4%E5%AE%9E%E7%8E%B0%E6%8E%A7%E5%88%B6%E4%BF%A1%E5%8F%B7%E7%9A%84%E8%BD%AC%E6%8D%A2%EF%BC%89"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">Controller （指令实现控制信号的转换）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IFU-%E5%8F%96%E6%8C%87%E4%BB%A4%E5%8D%95%E5%85%83"><span class="toc-number">1.2.3.</span> <span class="toc-text">IFU (取指令单元)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IF-ID%EF%BC%88D%E7%BA%A7%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">IF_ID（D级寄存器）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stall-%E6%9A%82%E5%81%9C%E4%BF%A1%E5%8F%B7%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-number">1.2.5.</span> <span class="toc-text">Stall (暂停信号控制器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shift-%E7%A7%BB%E4%BD%8D%E5%99%A8"><span class="toc-number">1.2.6.</span> <span class="toc-text">shift(移位器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMP%EF%BC%88%E6%AF%94%E8%BE%83%E5%99%A8%EF%BC%89"><span class="toc-number">1.2.7.</span> <span class="toc-text">CMP（比较器）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GRF-%E5%AF%84%E5%AD%98%E5%99%A8%E5%A0%86"><span class="toc-number">1.2.8.</span> <span class="toc-text">GRF(寄存器堆)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ID-EX-E%E7%BA%A7%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.2.9.</span> <span class="toc-text">ID_EX (E级寄存器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ALU-%E7%AE%97%E6%95%B0%E9%80%BB%E8%BE%91%E5%8D%95%E4%BD%8D"><span class="toc-number">1.2.10.</span> <span class="toc-text">ALU(算数逻辑单位)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EX-MEM-M%E7%BA%A7%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.2.11.</span> <span class="toc-text">EX_MEM(M级寄存器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DM-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%99%A8"><span class="toc-number">1.2.12.</span> <span class="toc-text">DM(数据存储器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MEM-WB"><span class="toc-number">1.2.13.</span> <span class="toc-text">MEM_WB</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF"><span class="toc-number">1.3.</span> <span class="toc-text">三、数据通路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">四、测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%9D%E8%80%83%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">五、思考题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q1"><span class="toc-number">1.5.1.</span> <span class="toc-text">Q1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q2"><span class="toc-number">1.5.2.</span> <span class="toc-text">Q2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q3"><span class="toc-number">1.5.3.</span> <span class="toc-text">Q3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q4"><span class="toc-number">1.5.4.</span> <span class="toc-text">Q4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q5"><span class="toc-number">1.5.5.</span> <span class="toc-text">Q5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q6"><span class="toc-number">1.5.6.</span> <span class="toc-text">Q6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q7"><span class="toc-number">1.5.7.</span> <span class="toc-text">Q7</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/04/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OS_作业2"/></a><div class="content"><a class="title" href="/2024/07/04/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2">OS_作业2</a><time datetime="2024-07-04T12:46:49.310Z" title="发表于 2024-07-04 20:46:49">2024-07-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P5/" title="CO_P5"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P5"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P5/" title="CO_P5">CO_P5</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P6/" title="CO_P6"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P6"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P6/" title="CO_P6">CO_P6</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P7/" title="CO_P7"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P7"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P7/" title="CO_P7">CO_P7</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P4/" title="CO_P4"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P4"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P4/" title="CO_P4">CO_P4</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'ams'
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+      
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const runMermaid = (ele) => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from(ele).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+    
+    codeMermaidEle.forEach(ele => {
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.innerHTML = `<pre class="mermaid-src" hidden>${ele.textContent}</pre>`
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+  
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

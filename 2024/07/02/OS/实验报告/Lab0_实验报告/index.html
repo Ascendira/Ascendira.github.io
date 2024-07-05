@@ -1,17 +1,17 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Lab0 | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Thinking 0.1 思考下列有关 Git 的问题：  在前述已初始化的 ~&#x2F;learnGit 目录下，创建一个名为 README.txt 的文件。执行命令 git status &gt; Untracked.txt（其中的 &gt; 为输出重定向，我们将在 0.6.3 中详细介绍）。 在 README.txt 文件中添加任意文件内容，然后使用 add 命令，再执行命令 git st">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Lab0 | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="实验报告 —— 思考题+难点分析+实验体会">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Lab0">
 <meta property="og:url" content="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/index.html">
 <meta property="og:site_name" content="Ascendira">
-<meta property="og:description" content="Thinking 0.1 思考下列有关 Git 的问题：  在前述已初始化的 ~&#x2F;learnGit 目录下，创建一个名为 README.txt 的文件。执行命令 git status &gt; Untracked.txt（其中的 &gt; 为输出重定向，我们将在 0.6.3 中详细介绍）。 在 README.txt 文件中添加任意文件内容，然后使用 add 命令，再执行命令 git st">
+<meta property="og:description" content="实验报告 —— 思考题+难点分析+实验体会">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg">
 <meta property="article:published_time" content="2024-07-02T06:20:04.248Z">
-<meta property="article:modified_time" content="2024-07-02T15:54:05.030Z">
+<meta property="article:modified_time" content="2024-07-04T13:18:28.937Z">
 <meta property="article:author" content="Ascendira">
-<meta property="article:tag" content="OS实验">
+<meta property="article:tag" content="实验">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+<meta name="twitter:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
       const saveToLocal = {
         set: (key, value, ttl) => {
           if (ttl === 0) return
@@ -174,11 +174,15 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-07-02 23:54:05'
-}</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Lab0</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-02T06:20:04.248Z" title="发表于 2024-07-02 14:20:04">2024-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-02T15:54:05.030Z" title="更新于 2024-07-02 23:54:05">2024-07-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OS/">OS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Lab0"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="Thinking-0-1"><a href="#Thinking-0-1" class="headerlink" title="Thinking 0.1"></a>Thinking 0.1</h4><blockquote>
+  postUpdate: '2024-07-04 21:18:28'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Lab0</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-02T06:20:04.248Z" title="发表于 2024-07-02 14:20:04">2024-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-04T13:18:28.937Z" title="更新于 2024-07-04 21:18:28">2024-07-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OS/">OS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Lab0"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="Thinking-0-1"><a href="#Thinking-0-1" class="headerlink" title="Thinking 0.1"></a>Thinking 0.1</h4><blockquote>
 <p>思考下列有关 Git 的问题：</p>
 <ul>
-<li>在前述已初始化的 ~&#x2F;learnGit 目录下，创建一个名为 README.txt 的文件。执行命令 git status &gt; Untracked.txt（其中的 &gt; 为输出重定向，我们将在 0.6.3 中详细介绍）。</li>
+<li>在前述已初始化的 ~/learnGit 目录下，创建一个名为 README.txt 的文件。执行命令 git status &gt; Untracked.txt（其中的 &gt; 为输出重定向，我们将在 0.6.3 中详细介绍）。</li>
 <li>在 README.txt 文件中添加任意文件内容，然后使用 add 命令，再执行命令 git status &gt; Stage.txt。</li>
 <li>提交 README.txt，并在提交说明里写入自己的学号。</li>
 <li>执行命令 cat Untracked.txt 和 cat Stage.txt，对比两次运行的结果，体会README.txt 两次所处位置的不同。</li>
@@ -210,23 +214,23 @@
 </ol>
 </blockquote>
 <ol>
-<li>git checkout – print.c</li>
+<li>git checkout — print.c</li>
 <li><ul>
 <li>git reset HEAD print.c</li>
-<li>git checkout – print.c</li>
+<li>git checkout — print.c </li>
 </ul>
 </li>
-<li>git rm –cached print.c</li>
+<li>git rm —cached print.c</li>
 </ol>
 <h4 id="Thinking-0-4"><a href="#Thinking-0-4" class="headerlink" title="Thinking 0.4"></a>Thinking 0.4</h4><blockquote>
 <p>思考下列有关 Git 的问题：</p>
 <ul>
-<li>找到在 &#x2F;home&#x2F;22xxxxxx&#x2F;learnGit 下刚刚创建的 README.txt 文件，若不存在则新建该文件。</li>
+<li>找到在 /home/22xxxxxx/learnGit 下刚刚创建的 README.txt 文件，若不存在则新建该文件。</li>
 <li>在文件里加入 Testing <strong>1</strong>，git add，git commit，提交说明记为 <strong>1</strong>。</li>
 <li>模仿上述做法，把 1 分别改为 2 和 3，再提交两次。</li>
 <li>使用 git log 命令查看提交日志，看是否已经有三次提交，记下提交说明为 3 的哈希值<em>a</em>。</li>
-<li>进行版本回退。执行命令 git reset –hard HEAD^ 后，再执行 git log，观察其变化。</li>
-<li>找到提交说明为 1 的哈希值，执行命令 git reset –hard <hash> 后，再执行 git log，观察其变化。现在已经回到了旧版本，为了再次回到新版本，执行 git reset –hard <hash>，再执行 git log，观察其变化。</li>
+<li>进行版本回退。执行命令 git reset —hard HEAD^ 后，再执行 git log，观察其变化。</li>
+<li>找到提交说明为 1 的哈希值，执行命令 git reset —hard <hash> 后，再执行 git log，观察其变化。现在已经回到了旧版本，为了再次回到新版本，执行 git reset —hard <hash>，再执行 git log，观察其变化。</li>
 </ul>
 </blockquote>
 <ul>
@@ -239,29 +243,19 @@
 <li><p><strong>git log:</strong>  提交说明为”1 2 3“均会显示</p>
 </li>
 </ul>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgrvj.png" alt="image-20240311235422573" style="zoom:50%;" />
-
-
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgrvj.png" alt="image-20240311235422573" style="zoom:50%;" /></p>
 <ul>
-<li>**git reset –hard HEAD^ + git log: **仅显示”1 2“的提交说明</li>
+<li><strong>git reset —hard HEAD^ + git log</strong>: 仅显示”1 2“的提交说明</li>
 </ul>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgAdp.png" alt="image-20240311235631711" style="zoom:50%;" />
-
-
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgAdp.png" alt="image-20240311235631711" style="zoom:50%;" /></p>
 <ul>
-<li><strong>git reset –hard e27c0fddee6312baa600c4ab7a462ffad96e1abc(提交说明为“1”的哈希值) + git log</strong>：仅显示”1“的提交说明</li>
+<li><strong>git reset —hard e27c0fddee6312baa600c4ab7a462ffad96e1abc(提交说明为“1”的哈希值) + git log</strong>：仅显示”1“的提交说明</li>
 </ul>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgZaU.png" alt="image-20240312000028929" style="zoom:50%;" />
-
- 
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgZaU.png" alt="image-20240312000028929" style="zoom:50%;" /></p>
 <ul>
-<li><strong>git reset –hard bf6889e550c6a9c0266d99ee648bfd37a7e00(提交说明为“3) + git log:</strong> 提交说明为”1 2 3“均会显示</li>
+<li><strong>git reset —hard bf6889e550c6a9c0266d99ee648bfd37a7e00(提交说明为“3) + git log:</strong> 提交说明为”1 2 3“均会显示</li>
 </ul>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgvNY.png" alt="image-20240311235747484" style="zoom:50%;" />
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgvNY.png" alt="image-20240311235747484" style="zoom:50%;" /></p>
 <h4 id="Thinking-0-5"><a href="#Thinking-0-5" class="headerlink" title="Thinking 0.5"></a>Thinking 0.5</h4><blockquote>
 <p>执行如下命令, 并查看结果</p>
 <ul>
@@ -271,30 +265,21 @@
 <li>echo forth &gt;&gt; outp</li>
 </ul>
 </blockquote>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgyEv.png" alt="image-20240312000703998" style="zoom:80%;" />
-
-
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgyEv.png" alt="image-20240312000703998" style="zoom:80%;" /></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#生成output.txt文件，将second重定向至output.txt</span></span><br><span class="line"><span class="built_in">echo</span> second &gt; output.txt</span><br><span class="line"></span><br><span class="line"><span class="comment">#将second重定向并覆盖output.txt内容</span></span><br><span class="line"><span class="built_in">echo</span> third &gt; output.txt</span><br><span class="line"></span><br><span class="line"><span class="comment">#将four重定向并添加到output.txt</span></span><br><span class="line"><span class="built_in">echo</span> four &gt;&gt; output.txt</span><br></pre></td></tr></table></figure>
-
 <h4 id="Thinking-0-6"><a href="#Thinking-0-6" class="headerlink" title="Thinking 0.6"></a>Thinking 0.6</h4><blockquote>
 <p>使用你知道的方法（包括重定向）创建下图内容的文件（文件命名为 test），将创建该文件的命令序列保存在 command 文件中，并将 test 文件作为批处理文件运行，将运行结果输出至 result 文件中。给出 command 文件和 result 文件的内容，并对最后的结果进行解释说明（可以从 test 文件的内容入手）. 具体实现的过程中思考下列问题: echoecho Shell Start 与 echo <code>echo Shell Start</code> 效果是否有区别; echo echo $c&gt;file1与 echo <code>echo $c&gt;file1</code> 效果是否有区别.</p>
 </blockquote>
 <p><strong>commend：</strong></p>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPggIq.png" alt="image-20240312110258910" style="zoom:62%;" />
-
-
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPggIq.png" alt="image-20240312110258910" style="zoom:62%;" /></p>
 <p><strong>test:</strong></p>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgpFc.png" alt="image-20240312110636472" style="zoom:80%;" />
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgpFc.png" alt="image-20240312110636472" style="zoom:80%;" /></p>
 <p><strong>result:</strong></p>
 <blockquote>
 <p>$[[]]: 数值计算</p>
-<p>&gt;|&gt;&gt;重定向</p>
+<p>>|&gt;&gt;重定向</p>
 </blockquote>
-<img src="https://ooo.0x0.ooo/2024/07/02/OPgDdI.png" alt="image-20240312110809788" style="zoom:80%;" />
-
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPgDdI.png" alt="image-20240312110809788" style="zoom:80%;" /></p>
 <ol>
 <li><code>echo echo Shell Start</code> 与 <code>echo echo Shell Start</code> 效果是否有区别</li>
 </ol>
@@ -302,15 +287,15 @@
 <li>没有区别</li>
 <li>两者都是直接标准输出echo Shell Start</li>
 </ul>
-<ol start="2">
+<ol>
 <li><code>echo echo $c&gt;file1</code>与 <code>echo echo $c&gt;file1</code> 效果是否有区别</li>
 </ol>
 <ul>
 <li>有区别</li>
 <li>前者将echo 3($c的值)输出到file，后者标准输出echo $c&gt;file1</li>
 </ul>
-<h4 id="ThinkingA-1"><a href="#ThinkingA-1" class="headerlink" title="Thinking	A.1"></a>Thinking	A.1</h4><blockquote>
-<p>在现代的 64 位系统中，提供了 64 位的字长，但实际上不是 64 位页式存储系统。假设在 64 位系统中采用三级页表机制，页面大小 4KB。由于 64 位系统中字长为8B，且页目录也占用一页，因此页目录中有 512 个页目录项，因此每级页表都需要 9 位。因此在 64 位系统下，总共需要 3 <em>×</em> 9 + 12 &#x3D; 39 位就可以实现三级页表机制，并不需要 64位。</p>
+<h4 id="Thinking-A-1"><a href="#Thinking-A-1" class="headerlink" title="Thinking    A.1"></a>Thinking    A.1</h4><blockquote>
+<p>在现代的 64 位系统中，提供了 64 位的字长，但实际上不是 64 位页式存储系统。假设在 64 位系统中采用三级页表机制，页面大小 4KB。由于 64 位系统中字长为8B，且页目录也占用一页，因此页目录中有 512 个页目录项，因此每级页表都需要 9 位。因此在 64 位系统下，总共需要 3 <em>×</em> 9 + 12 = 39 位就可以实现三级页表机制，并不需要 64位。</p>
 <p>现考虑上述 39 位的三级页式存储系统，虚拟地址空间为 512 GB，若三级页表的基地址为 PTbase，请计算：</p>
 <ul>
 <li>三级页表页目录的基地址。</li>
@@ -321,30 +306,71 @@
 <ol>
 <li><ul>
 <li>如果三级页表页目录的基地址表示二级页表的基地址：$ PT_{base} + (PT_base &gt;&gt; 12)*8$</li>
-<li>如果三级页表页目录的基地址表示二级页表的基地址：$ PT_{base} + (PT_base &gt;&gt; 12)*8 +(PT_{base} &gt;&gt; 21)*8 $</li>
+<li>如果三级页表页目录的基地址表示二级页表的基地址：$ PT_{base} + (PT_base &gt;&gt; 12)<em>8 +(PT_{base} &gt;&gt; 21)</em>8 $</li>
 </ul>
 </li>
 <li>$ PT_{base}[31:39] $表示映射到页目录自身的页目录项（一级页表）内的偏移量</li>
 </ol>
-<h4 id="难点分析"><a href="#难点分析" class="headerlink" title="难点分析"></a>难点分析</h4><img src="https://ooo.0x0.ooo/2024/07/02/OPgLaD.png" alt="image-20240314105505370" style="zoom:15%;" />
-
+<h4 id="难点分析"><a href="#难点分析" class="headerlink" title="难点分析"></a>难点分析</h4><p><img src="https://ooo.0x0.ooo/2024/07/02/OPgLaD.png" alt="image-20240314105505370" style="zoom:15%;" /></p>
 <h4 id="实验体会"><a href="#实验体会" class="headerlink" title="实验体会"></a>实验体会</h4><ul>
-<li><p>**lab0课下： **借助实验讲解视频，实验指导书巩固linux操作命令，Vim常用功能，GCC编译器的使用，Makefile的编写，Git管理，重定向和管道，shell脚本编程等知识点，利用上述知识点基本覆盖课下实验，但是遇到gcc编译并链接两个不同文件夹的.c文件时，需使用-I选线，引入源文件的文件夹。</p>
+<li><p><strong>lab0课下：</strong>借助实验讲解视频，实验指导书巩固linux操作命令，Vim常用功能，GCC编译器的使用，Makefile的编写，Git管理，重定向和管道，shell脚本编程等知识点，利用上述知识点基本覆盖课下实验，但是遇到gcc编译并链接两个不同文件夹的.c文件时，需使用-I选线，引入源文件的文件夹。</p>
 </li>
-<li><p>**lab0-exam： **lab0课下实验的知识点覆盖这一部分练习</p>
+<li><p><strong>lab0-exam：</strong>lab0课下实验的知识点覆盖这一部分练习</p>
 <blockquote>
 <p>注意生成文件的位置</p>
 <p>在实验的准备阶段仔细阅读实验相关要求，例如执行命令bash init.sh</p>
 </blockquote>
 </li>
-<li><p>**lab0-extra: **仔细理解题意，实验中需要的完成的任务较为简单，对<code>sort</code>，<code>grep</code>，<code>awk</code>三条命令的使用</p>
+<li><p><strong>lab0-extra：</strong>仔细理解题意，实验中需要的完成的任务较为简单，对<code>sort</code>，<code>grep</code>，<code>awk</code>三条命令的使用</p>
 <blockquote>
 <p>在.sh文件（shell脚本文件）编写命令时需注意传入参数的使用，不要直接用文件名，例如grep ${CMD} ${FILE}（$CMD—寻找字符串 $FLIE—目标文件）</p>
-<p>变量赋值：nowpid&#x3D;$(awk -F “ “ ‘$2&#x3D;&#x3D;’$nowpid’ {print $3}’ ${FILE})</p>
+<p>变量赋值：nowpid=$(awk -F “ “ ‘$2==’$nowpid’ {print $3}’ ${FILE})</p>
 </blockquote>
 </li>
 </ul>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/">https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OS%E5%AE%9E%E9%AA%8C/">OS实验</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Lab1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab1</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab2_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab2</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/" title="挑战性任务-Sigaction"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">挑战性任务-Sigaction</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab5_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab5</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab3_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab3</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab4_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-1"><span class="toc-number">1.</span> <span class="toc-text">Thinking 0.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-2"><span class="toc-number">2.</span> <span class="toc-text">Thinking 0.2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-3"><span class="toc-number">3.</span> <span class="toc-text">Thinking 0.3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-4"><span class="toc-number">4.</span> <span class="toc-text">Thinking 0.4</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-5"><span class="toc-number">5.</span> <span class="toc-text">Thinking 0.5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-6"><span class="toc-number">6.</span> <span class="toc-text">Thinking 0.6</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ThinkingA-1"><span class="toc-number">7.</span> <span class="toc-text">Thinking	A.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%BE%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">8.</span> <span class="toc-text">难点分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%BD%93%E4%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">实验体会</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第一单元总结">第一单元总结</a><time datetime="2024-07-02T16:03:53.898Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E5%9B%9B%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第四单元总结">第四单元总结</a><time datetime="2024-07-02T16:03:53.895Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%B8%89%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第三单元总结">第三单元总结</a><time datetime="2024-07-02T16:03:53.892Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/2024%20BUAA-OO%20%E7%AC%AC%E4%BA%8C%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" title="第二单元总结">第二单元总结</a><time datetime="2024-07-02T16:03:53.888Z" title="发表于 2024-07-03 00:03:53">2024-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/03/OO/oopre%E6%80%BB%E7%BB%93/" title="OOpre总结">OOpre总结</a><time datetime="2024-07-02T16:03:41.211Z" title="发表于 2024-07-03 00:03:41">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/">https://ascendira.github.io/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Lab1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab1_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab1"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab1</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab2_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab2"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab2</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/%E6%8C%91%E6%88%98%E6%80%A7%E4%BB%BB%E5%8A%A1-Sigaction/" title="挑战性任务-Sigaction"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">挑战性任务-Sigaction</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab5_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab5"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab5</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab3_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab3"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab3</div></div></a></div><div><a href="/2024/07/02/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab4_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab4"><img class="cover" src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-02</div><div class="title">Lab4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">24</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-1"><span class="toc-number">1.</span> <span class="toc-text">Thinking 0.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-2"><span class="toc-number">2.</span> <span class="toc-text">Thinking 0.2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-3"><span class="toc-number">3.</span> <span class="toc-text">Thinking 0.3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-4"><span class="toc-number">4.</span> <span class="toc-text">Thinking 0.4</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-5"><span class="toc-number">5.</span> <span class="toc-text">Thinking 0.5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-0-6"><span class="toc-number">6.</span> <span class="toc-text">Thinking 0.6</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thinking-A-1"><span class="toc-number">7.</span> <span class="toc-text">Thinking    A.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%BE%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">8.</span> <span class="toc-text">难点分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E4%BD%93%E4%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">实验体会</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/04/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OS_作业2"/></a><div class="content"><a class="title" href="/2024/07/04/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2">OS_作业2</a><time datetime="2024-07-04T12:46:49.310Z" title="发表于 2024-07-04 20:46:49">2024-07-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P5/" title="CO_P5"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P5"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P5/" title="CO_P5">CO_P5</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P6/" title="CO_P6"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P6"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P6/" title="CO_P6">CO_P6</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P7/" title="CO_P7"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P7"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P7/" title="CO_P7">CO_P7</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P4/" title="CO_P4"><img src="https://ooo.0x0.ooo/2024/07/04/OPRQPq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CO_P4"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P4/" title="CO_P4">CO_P4</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'ams'
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+      
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
   const runMermaid = (ele) => {
     window.loadMermaid = true
     const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
@@ -395,4 +421,4 @@
   
   btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
   window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
-})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+})()</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
