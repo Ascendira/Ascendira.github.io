@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OS_作业3 | Ascendira</title><meta name="author" content="Ascendira"><meta name="copyright" content="Ascendira"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="第一题  （1）进程整个的地址空间为 $2^{32}$ 字节，一页有 $2^{22}$ 字节 （2） 第一级页表的起始基地址：  根据页表项宇地址空间是线性映射的，0x80000000对应0x80000000 &gt;&gt; 12个页表项 由于一个页表项占4B空间，偏移为0x80000000 &gt;&gt; 12 * 4，即0x200000 起始基地址为0x80200000  通过逻辑地址0x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS_作业3">
+<meta property="og:url" content="https://ascendira.github.io/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A3/index.html">
+<meta property="og:site_name" content="Ascendira">
+<meta property="og:description" content="第一题  （1）进程整个的地址空间为 $2^{32}$ 字节，一页有 $2^{22}$ 字节 （2） 第一级页表的起始基地址：  根据页表项宇地址空间是线性映射的，0x80000000对应0x80000000 &gt;&gt; 12个页表项 由于一个页表项占4B空间，偏移为0x80000000 &gt;&gt; 12 * 4，即0x200000 起始基地址为0x80200000  通过逻辑地址0x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg">
+<meta property="article:published_time" content="2024-06-30T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-09T09:42:02.123Z">
+<meta property="article:author" content="Ascendira">
+<meta property="article:tag" content="平时作业">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ascendira.github.io/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.14.0-b3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>(()=>{
+      const saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+      
+      window.btf = {
+        saveToLocal: saveToLocal,
+        getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = url
+          script.async = true
+          script.onerror = reject
+          script.onload = script.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            script.onload = script.onreadystatechange = null
+            resolve()
+          }
+
+          Object.keys(attr).forEach(key => {
+            script.setAttribute(key, attr[key])
+          })
+
+          document.head.appendChild(script)
+        }),
+
+        getCSS: (url, id = false) => new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.href = url
+          if (id) link.id = id
+          link.onerror = reject
+          link.onload = link.onreadystatechange = function() {
+            const loadState = this.readyState
+            if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+            link.onload = link.onreadystatechange = null
+            resolve()
+          }
+          document.head.appendChild(link)
+        }),
+
+        addGlobalFn: (key, fn, name = false, parent = window) => {
+          const pjaxEnable = false
+          if (!pjaxEnable && key.startsWith('pjax')) return
+
+          const globalFn = parent.globalFn || {}
+          const keyObj = globalFn[key] || {}
+    
+          if (name && keyObj[name]) return
+    
+          name = name || Object.keys(keyObj).length
+          keyObj[name] = fn
+          globalFn[key] = keyObj
+          parent.globalFn = globalFn
+        }
+      }
+    
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+      
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })()</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":150,"highlightFullpage":true,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OS_作业3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-09 17:42:02'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/public/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Ascendira"><span class="site-name">Ascendira</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">OS_作业3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-30T04:00:00.000Z" title="发表于 2024-06-30 12:00:00">2024-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-09T09:42:02.123Z" title="更新于 2024-08-09 17:42:02">2024-08-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/OS/">OS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="OS_作业3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h4><p><img src="https://ooo.0x0.ooo/2024/07/02/OPmY6c.png" alt="image-20240412082127356"></p>
+<blockquote>
+<p>（1）进程整个的地址空间为 $2^{32}$ 字节，一页有 $2^{22}$ 字节</p>
+<p>（2）</p>
+<p>第一级页表的起始基地址：</p>
+<ul>
+<li>根据页表项宇地址空间是线性映射的，<code>0x80000000</code>对应<code>0x80000000 &gt;&gt; 12</code>个页表项</li>
+<li>由于一个页表项占4B空间，偏移为<code>0x80000000 &gt;&gt; 12 * 4</code>，即<code>0x200000</code></li>
+<li>起始基地址为<code>0x80200000</code></li>
+</ul>
+<p>通过逻辑地址<code>0x80200000</code>读出第一级页表所在的物理页框号（0x80200800存入数据为0x80200000该起始基地址，绕了两圈又回来了）</p>
+<p><strong>注：</strong>根据线性映射，每个虚拟地址都存在于某个页表内，可能是页目录项所在页表还是页表项所在页表。但是每个虚拟地址存在其对应的物理地址的条件是其对应的每一级页表都存在相应的的物理页表可供查询。</p>
+<p>（3）</p>
+<p>0x0访问缺失</p>
+<p>0x00803004</p>
+<ul>
+<li>页目录项的物理地址：0x1008</li>
+<li>页表项的物理地址：0x500c</li>
+<li>获取的物理地址：0x20004</li>
+</ul>
+<p>0x00402001</p>
+<ul>
+<li>页目录项的物理地址：0x1004</li>
+<li>页表项的物理地址：0x1008</li>
+<li>获取的物理地址：0x5001</li>
+</ul>
+<p><strong>注：</strong>根据实际物理页表的基地址加上偏移量寻找表项或者物理地址</p>
+<p>（4）</p>
+<p>逻辑地址：0x00c01028</p>
+</blockquote>
+<h4 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h4><p><img src="https://ooo.0x0.ooo/2024/07/02/OPmlkr.png" alt="image-20240412102225232" style="zoom:67%;" /></p>
+<p><img src="https://ooo.0x0.ooo/2024/07/02/OPm9pM.png" alt="image-20240412102254942" style="zoom:67%;" /></p>
+<blockquote>
+<p>一个地址对应一字节（8位），每个页表项大小是4字节，四字节对齐</p>
+<p>大尾端符合直观读取数据</p>
+<p>Load [0x00001022]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_0000</li>
+<li>地址数据：0x0010_0007，有效位为1</li>
+<li>页表项的物理地址：0x0010_0004</li>
+<li>地址数据：0x0000_4067，有效位为1，读写位为1</li>
+<li>物理地址：0x0000_4022</li>
+<li>读入数据：20</li>
+</ul>
+<p>Store [0x00C07222]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_000C</li>
+<li>地址数据：0x0010_3007，有效位为1</li>
+<li>页表项的物理地址：0x0010_301C</li>
+<li>地址数据：0xEEFF_0001，有效位为1，读写位为0</li>
+<li>物理地址：0xEEFF_0222</li>
+<li>Error</li>
+</ul>
+<p>Store[0x00C005BF]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_000C</li>
+<li>地址数据：0x0010_3007，有效位为1</li>
+<li>页表项的物理地址：0x0010_3014</li>
+<li>地址数据：0x6677_8899，有效位为1，读写位为0</li>
+<li>物理地址：0x6677_85BF</li>
+<li>Error</li>
+</ul>
+<p>Load [0x00003013]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_0000</li>
+<li>地址数据：0x0010_0007，有效位为1</li>
+<li>页表项的物理地址：0x0010_000C</li>
+<li>地址数据：0x0000_4007，有效位为1，读写位为1</li>
+<li>物理地址：0x0000_4013</li>
+<li>读入数据：19</li>
+</ul>
+<p>Load [0xFF80078F]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_0FF8</li>
+<li>地址数据：0x001F_E007，有效位为1</li>
+<li>页表项的物理地址：0x001F_E000</li>
+<li>地址数据：0x0415_0000，有效位为0，读写位为0</li>
+<li>Error</li>
+</ul>
+<p>Load [0xFFFFF005]</p>
+<ul>
+<li>页目录项的物理地址：0x0020_0FFF</li>
+<li>越界</li>
+<li>Error</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ascendira.github.io">Ascendira</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ascendira.github.io/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A3/">https://ascendira.github.io/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ascendira.github.io" target="_blank">Ascendira</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B9%B3%E6%97%B6%E4%BD%9C%E4%B8%9A/">平时作业</a></div><div class="post_share"><div class="social-share" data-image="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A1/" title="OS_作业1"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" onerror="onerror=null;src='/public/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">OS_作业1</div></div></a></div><div class="next-post pull-right"><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" onerror="onerror=null;src='/public/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">OS_作业2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A1/" title="OS_作业1"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">OS_作业1</div></div></a></div><div><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A2/" title="OS_作业2"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">OS_作业2</div></div></a></div><div><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A5/" title="OS_作业5"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">OS_作业5</div></div></a></div><div><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A4/" title="OS_作业4"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">OS_作业4</div></div></a></div><div><a href="/2024/06/30/OS/%E4%BD%9C%E4%B8%9A/%E4%BD%9C%E4%B8%9A6/" title="OS_作业6"><img class="cover" src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202408091736668.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">OS_作业6</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/public/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ascendira</div><div class="author-info__description">学海无涯，勤耕不辍，方能以智勇之剑，斩无知与愚昧于马下，登堂入室，窥学问之堂奥。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://admin.qidian.qq.com/static_proxy/b2b-qq/wpa-link/index.html#/person?uin=3188152498" target="_blank" title="QQ"><i class="iconfont icon-QQ"></i></a><a class="social-icon" href="https://github.com//Ascendira" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/liangjincheng_7@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">第一题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">第二题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/08/08/Camp/Datawhale%20AI%E5%A4%8F%E4%BB%A4%E8%90%A5%E7%AC%AC%E5%9B%9B%E6%9C%9F%E9%AD%94%E6%90%AD-AIGC%E6%96%87%E7%94%9F%E5%9B%BE%E6%96%B9%E5%90%91Task1%E7%AC%94%E8%AE%B0/" title="Camp"><img src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202407042232529.jpg" onerror="this.onerror=null;this.src='/public/img/404.jpg'" alt="Camp"/></a><div class="content"><a class="title" href="/2024/08/08/Camp/Datawhale%20AI%E5%A4%8F%E4%BB%A4%E8%90%A5%E7%AC%AC%E5%9B%9B%E6%9C%9F%E9%AD%94%E6%90%AD-AIGC%E6%96%87%E7%94%9F%E5%9B%BE%E6%96%B9%E5%90%91Task1%E7%AC%94%E8%AE%B0/" title="Camp">Camp</a><time datetime="2024-08-08T04:00:00.000Z" title="发表于 2024-08-08 12:00:00">2024-08-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/04/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab0"><img src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202407042232529.jpg" onerror="this.onerror=null;this.src='/public/img/404.jpg'" alt="Lab0"/></a><div class="content"><a class="title" href="/2024/07/04/OS/%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/Lab0_%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/" title="Lab0">Lab0</a><time datetime="2024-07-04T13:18:00.000Z" title="发表于 2024-07-04 21:18:00">2024-07-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P4/" title="CO_P4"><img src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202407042232529.jpg" onerror="this.onerror=null;this.src='/public/img/404.jpg'" alt="CO_P4"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P4/" title="CO_P4">CO_P4</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P5/" title="CO_P5"><img src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202407042232529.jpg" onerror="this.onerror=null;this.src='/public/img/404.jpg'" alt="CO_P5"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P5/" title="CO_P5">CO_P5</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/03/CO/P6/" title="CO_P6"><img src="https://pricket.oss-cn-beijing.aliyuncs.com/D:%5CSoftware%5CPicGo%5Cpicture%5C202407042232529.jpg" onerror="this.onerror=null;this.src='/public/img/404.jpg'" alt="CO_P6"/></a><div class="content"><a class="title" href="/2024/07/03/CO/P6/" title="CO_P6">CO_P6</a><time datetime="2024-07-03T10:09:05.516Z" title="发表于 2024-07-03 18:09:05">2024-07-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Ascendira</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.14.0-b3"></script><script src="/js/main.js?v=4.14.0-b3"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.35/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'ams'
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+      
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const runMermaid = (ele) => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from(ele).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+    
+    codeMermaidEle.forEach(ele => {
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.innerHTML = `<pre class="mermaid-src" hidden>${ele.textContent}</pre>`
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (false) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js').then(runMermaidFn)
+  }
+  
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
